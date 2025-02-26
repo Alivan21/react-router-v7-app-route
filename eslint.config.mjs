@@ -9,11 +9,16 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 
 export default tseslint.config(
   { ignores: ["dist", "node_modules/*", "!.prettierrc"] },
   {
-    extends: [pluginJs.configs.recommended, ...tseslint.configs.recommended],
+    extends: [
+      pluginJs.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...pluginQuery.configs["flat/recommended"],
+    ],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,

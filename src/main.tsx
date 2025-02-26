@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { createRoutesFromFiles } from "./libs/react-router/file-based-route";
+import TanstackProvider from "./libs/tanstack-query/tanstack-provider.tsx";
 import "./index.css";
 import "./middleware.ts";
 
@@ -15,6 +16,8 @@ const router = createBrowserRouter([routes]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <TanstackProvider>
+      <RouterProvider router={router} />
+    </TanstackProvider>
   </StrictMode>
 );
