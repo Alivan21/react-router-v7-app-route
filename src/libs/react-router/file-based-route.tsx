@@ -1,5 +1,6 @@
 import { JSX, lazy, LazyExoticComponent } from "react";
 import { ActionFunction, LoaderFunction, RouteObject } from "react-router";
+import { withMiddleware } from "./middleware-config";
 
 // ==================== TYPE DEFINITIONS ====================
 
@@ -101,10 +102,10 @@ function convertPagesToRoute(
  * Creates a loader function for a route that first checks permissions.
  */
 function createLoaderFunction(importer: () => Promise<unknown>): LoaderFunction {
-  return async (args) => {
+  return withMiddleware(async (args) => {
     const result = (await importer()) as PageModuleExports;
     return result.loader ? result.loader(args) : null;
-  };
+  });
 }
 
 /**
@@ -163,6 +164,7 @@ function createRoute(args: {
     route.element = <args.PageComponent />;
     route.HydrateFallback = FallbackComponent;
     route.action = args.action;
+    route.loader = args.loader;
 
     route.handle = { pageType: pageType };
   }

@@ -1,5 +1,6 @@
-export function loader() {
+export async function loader() {
   console.log("🔍 LOADER RUNNING IN USER PAGE");
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   return null;
 }
 
