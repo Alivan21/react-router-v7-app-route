@@ -38,13 +38,40 @@ const DEFAULT_FALLBACK = () => <div>Loading...</div>;
 // ==================== MAIN FUNCTIONS ====================
 
 /**
+ * Creates a complete route configuration from file-based pages.
+ *
+ * @param pageFiles - Object mapping page/layout file paths to their dynamic import functions
+ * @param errorFiles - Object mapping error handler file paths to their dynamic import functions
+ * @param notFoundFiles - Object mapping 404 page file paths to their dynamic import functions
+ * @param loadingFiles - Object mapping loading component paths to their import functions
+ * @returns A complete route configuration object for React Router
+ */
+export function createRoutesFromFiles(
+  pageFiles: Record<string, () => Promise<unknown>>,
+  errorFiles: Record<string, () => Promise<unknown>> = {},
+  notFoundFiles: Record<string, () => Promise<unknown>> = {},
+  loadingFiles: Record<string, () => Promise<unknown>> = {}
+): RouteObject {
+  // Step 1: Convert page files to routes with loading components
+  const routes = convertPagesToRoute(pageFiles, loadingFiles) as RouteObject;
+
+  // Step 2: Add error boundaries to routes
+  addErrorElementToRoutes(errorFiles, routes);
+
+  // Step 3: Add 404 pages to routes
+  add404PageToRoutesChildren(notFoundFiles, routes);
+
+  return routes;
+}
+
+/**
  * Converts file-system based pages into React Router compatible routes.
  *
  * @param files - Object mapping file paths to their dynamic import functions
  * @param loadingFiles - Object mapping loading component paths to their import functions
  * @returns A complete route configuration object for React Router
  */
-export function convertPagesToRoute(
+function convertPagesToRoute(
   files: Record<string, () => Promise<unknown>>,
   loadingFiles: Record<string, () => Promise<unknown>> = {}
 ): ExtendedRouteObject {
