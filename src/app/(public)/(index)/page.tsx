@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
-export async function loader() {
-  // Simulate a slow network request
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  return null;
-}
+// export async function loader() {
+//   // Simulate a slow network request
+//   await new Promise((resolve) => setTimeout(resolve, 2000));
+//   return null;
+// }
 
 export default function IndexPage() {
   const [count, setCount] = useState(0);
@@ -18,13 +19,7 @@ export default function IndexPage() {
         </div>
         <div className="flex flex-col items-center space-y-4">
           <div className="text-7xl font-bold text-blue-600">{count}</div>
-          <button
-            className="cursor-pointer rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white shadow-md transition-colors duration-200 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none active:bg-blue-800"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            Increment
-          </button>
-
+          <Button onClick={() => setCount((count) => count + 1)}>Increment</Button>
           <p className="text-center text-sm text-gray-600">
             Click the button above to increment the counter
           </p>
