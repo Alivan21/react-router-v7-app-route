@@ -72,6 +72,12 @@ export default tseslint.config(
             "parent", // Imports from parent directories
             "sibling", // Imports from the same directory
           ],
+          pathGroups: [
+            {
+              pattern: "@/**",
+              group: "internal",
+            },
+          ],
           alphabetize: {
             order: "asc",
             caseInsensitive: true,

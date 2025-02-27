@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEY } from "@/common/constants/query-keys";
+import { useQuery } from "@/hooks/request/use-query";
 import { getUsers } from "../api";
 import { TUserQueryParams } from "../type";
-import { QUERY_KEY } from "@/common/constants/query-keys";
 
 /**
  * Hook to fetch users options

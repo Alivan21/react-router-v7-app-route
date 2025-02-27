@@ -1,7 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY } from "@/common/constants/query-keys";
+import { useMutation } from "@/hooks/request/use-mutation";
 import { updateUser } from "../api";
 import { TUpdateUserRequest } from "../schema";
-import { QUERY_KEY } from "@/common/constants/query-keys";
 
 /**
  * Hook for updating an existing user

@@ -2,7 +2,6 @@
  * Base API response interface that all response types should extend
  */
 export interface BaseResponse {
-  success: boolean;
   message: string;
   timestamp: string;
 }
@@ -11,7 +10,6 @@ export interface BaseResponse {
  * Standard success response with data payload
  */
 export interface SuccessResponse<T = unknown> extends BaseResponse {
-  success: true;
   data: T;
 }
 
@@ -19,7 +17,6 @@ export interface SuccessResponse<T = unknown> extends BaseResponse {
  * Standard error response with error details
  */
 export interface ErrorResponse extends BaseResponse {
-  success: false;
   error: {
     code: string;
     details?: unknown;

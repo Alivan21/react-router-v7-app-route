@@ -1,3 +1,0 @@
-type Session = {
-  sessionAuth: string;
-};

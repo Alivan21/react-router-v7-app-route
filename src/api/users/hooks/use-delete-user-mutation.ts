@@ -1,11 +1,12 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY } from "@/common/constants/query-keys";
+import { useMutation } from "@/hooks/request/use-mutation";
+import { deleteUser } from "../api";
+
 /**
  * Hook to delete a user
  * @param id - The ID of the user to delete
  */
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteUser } from "../api";
-import { QUERY_KEY } from "@/common/constants/query-keys";
-
 export const useDeleteUserMutation = (id: string) => {
   const queryClient = useQueryClient();
 

@@ -57,7 +57,6 @@ export async function getUsers(params: TUserQueryParams): Promise<TUserListRespo
     .slice(startIndex, endIndex);
 
   return {
-    success: true,
     message: "Users retrieved successfully",
     data: paginatedUsers,
     timestamp: new Date().toISOString(),
@@ -100,7 +99,6 @@ export async function getUserById(id: string): Promise<TUserResponse> {
   }
 
   return {
-    success: true,
     data: user,
     timestamp: new Date().toISOString(),
     message: "User retrieved successfully",
@@ -127,7 +125,6 @@ export async function createUser(
   mockUsers.push(newUser);
 
   return {
-    success: true,
     data: newUser,
     timestamp: new Date().toISOString(),
     message: "User created successfully",
@@ -159,7 +156,6 @@ export async function updateUser(
   mockUsers[userIndex] = updatedUser;
 
   return {
-    success: true,
     data: updatedUser,
     timestamp: new Date().toISOString(),
     message: "User updated successfully",
@@ -185,7 +181,6 @@ export async function deleteUser(id: string): Promise<TUserApiResponse> {
   };
 
   return {
-    success: true,
     timestamp: new Date().toISOString(),
     data: null,
     message: "User deleted successfully",
