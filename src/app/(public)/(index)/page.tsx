@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 
 // export async function loader() {
@@ -20,6 +21,7 @@ export default function IndexPage() {
         <div className="flex flex-col items-center space-y-4">
           <div className="text-7xl font-bold text-blue-600">{count}</div>
           <Button onClick={() => setCount((count) => count + 1)}>Increment</Button>
+          <Button onClick={() => toast.success("Hello World")}>Toast</Button>
           <p className="text-center text-sm text-gray-600">
             Click the button above to increment the counter
           </p>

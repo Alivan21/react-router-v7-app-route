@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { Toaster } from "react-hot-toast";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { createRoutesFromFiles } from "./libs/react-router/file-based-route";
 import TanstackProvider from "./libs/tanstack-query/tanstack-provider.tsx";
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <TanstackProvider>
       <RouterProvider router={router} />
+      <Toaster position="top-right" />
     </TanstackProvider>
   </StrictMode>
 );
