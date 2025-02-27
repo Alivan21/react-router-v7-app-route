@@ -1,9 +1,9 @@
-import { ApiResponse, PaginatedResponse, SuccessResponse } from "../../common/types/base-response";
+import { ApiResponse, PaginatedResponse, SuccessResponse } from "@/common/types/base-response";
 
 /**
  * User entity type definition
  */
-export interface User {
+export interface TUserItem {
   id: string;
   email: string;
   name: string;
@@ -14,16 +14,28 @@ export interface User {
 }
 
 /**
+ * Parameters for querying users
+ */
+export interface TUserQueryParams {
+  page?: number;
+  limit?: number;
+  per_page?: number;
+  search?: string;
+  sort_by?: "name" | "email" | "created_at" | "updated_at" | "phone_number";
+  sort_order?: "asc" | "desc";
+}
+
+/**
  * Response type for retrieving a single user
  */
-export type UserResponse = SuccessResponse<User>;
+export type TUserResponse = SuccessResponse<TUserItem>;
 
 /**
  * Response type for retrieving a list of users
  */
-export type UserListResponse = PaginatedResponse<User>;
+export type TUserListResponse = PaginatedResponse<TUserItem>;
 
 /**
  * General type for any user-related API response
  */
-export type UserApiResponse = ApiResponse<User | User[] | null>;
+export type TUserApiResponse = ApiResponse<TUserItem | TUserItem[] | null>;

@@ -1,7 +1,7 @@
 /**
  * Hook to delete a user
+ * @param id - The ID of the user to delete
  */
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteUser } from "../api";
 import { QUERY_KEY } from "@/common/constants/query-keys";

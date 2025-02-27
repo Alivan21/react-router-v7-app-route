@@ -30,7 +30,7 @@ export interface ErrorResponse extends BaseResponse {
  * Paginated response for list endpoints
  */
 export interface PaginatedResponse<T = unknown> extends SuccessResponse<T[]> {
-  meta: {
+  meta?: {
     total: number;
     page: number;
     limit: number;

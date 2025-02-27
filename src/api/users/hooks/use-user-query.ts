@@ -4,6 +4,7 @@ import { QUERY_KEY } from "@/common/constants/query-keys";
 
 /**
  * Hook to fetch a single user by ID
+ * @param id - The ID of the user to fetch
  */
 export const useUserQuery = (id: string) => {
   return useQuery({

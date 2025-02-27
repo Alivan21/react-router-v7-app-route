@@ -27,6 +27,7 @@
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.9",
     "tailwindcss-animate": "^1.0.7",
+    "universal-cookie": "^7.2.2",
     "zod": "^3.24.2"
   },
   "devDependencies": {

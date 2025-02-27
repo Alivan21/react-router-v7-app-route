@@ -1,7 +1,13 @@
-import { User, UserResponse, UserListResponse, UserApiResponse } from "./type";
+import {
+  TUserItem,
+  TUserResponse,
+  TUserListResponse,
+  TUserApiResponse,
+  TUserQueryParams,
+} from "./type";
 
 // Mock users data
-const mockUsers: User[] = [
+const mockUsers: TUserItem[] = [
   {
     id: "1",
     email: "john.doe@example.com",
@@ -37,8 +43,12 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 /**
  * Get a paginated list of users
  */
-export async function getUsers(page: number = 1, limit: number = 10): Promise<UserListResponse> {
+export async function getUsers(params: TUserQueryParams): Promise<TUserListResponse> {
   await delay(500); // Simulate network delay
+
+  // Add default values for optional parameters
+  const page = params.page ?? 1;
+  const limit = params.limit ?? 10;
 
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
@@ -53,8 +63,8 @@ export async function getUsers(page: number = 1, limit: number = 10): Promise<Us
     timestamp: new Date().toISOString(),
     meta: {
       total: mockUsers.length,
-      page,
-      limit,
+      page: page,
+      limit: limit,
       total_page: Math.ceil(mockUsers.length / limit),
       has_next_page: endIndex < mockUsers.length,
       has_prev_page: startIndex > 0,
@@ -77,11 +87,10 @@ export async function getUsers(page: number = 1, limit: number = 10): Promise<Us
     },
   };
 }
-
 /**
  * Get a user by ID
  */
-export async function getUserById(id: string): Promise<UserResponse> {
+export async function getUserById(id: string): Promise<TUserResponse> {
   await delay(300); // Simulate network delay
 
   const user = mockUsers.find((user) => user.id === id && user.deleted_at === null);
@@ -102,12 +111,12 @@ export async function getUserById(id: string): Promise<UserResponse> {
  * Create a new user
  */
 export async function createUser(
-  userData: Omit<User, "id" | "created_at" | "updated_at" | "deleted_at">
-): Promise<UserResponse> {
+  userData: Omit<TUserItem, "id" | "created_at" | "updated_at" | "deleted_at">
+): Promise<TUserResponse> {
   await delay(700); // Simulate network delay
 
   const now = new Date().toISOString();
-  const newUser: User = {
+  const newUser: TUserItem = {
     id: `${mockUsers.length + 1}`,
     ...userData,
     created_at: now,
@@ -130,8 +139,8 @@ export async function createUser(
  */
 export async function updateUser(
   id: string,
-  userData: Partial<Omit<User, "id" | "created_at" | "updated_at" | "deleted_at">>
-): Promise<UserResponse> {
+  userData: Partial<Omit<TUserItem, "id" | "created_at" | "updated_at" | "deleted_at">>
+): Promise<TUserResponse> {
   await delay(600); // Simulate network delay
 
   const userIndex = mockUsers.findIndex((user) => user.id === id && user.deleted_at === null);
@@ -141,7 +150,7 @@ export async function updateUser(
   }
 
   const now = new Date().toISOString();
-  const updatedUser: User = {
+  const updatedUser: TUserItem = {
     ...mockUsers[userIndex],
     ...userData,
     updated_at: now,
@@ -160,7 +169,7 @@ export async function updateUser(
 /**
  * Delete a user (soft delete)
  */
-export async function deleteUser(id: string): Promise<UserApiResponse> {
+export async function deleteUser(id: string): Promise<TUserApiResponse> {
   await delay(400); // Simulate network delay
 
   const userIndex = mockUsers.findIndex((user) => user.id === id && user.deleted_at === null);

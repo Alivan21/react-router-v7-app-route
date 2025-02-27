@@ -57,5 +57,5 @@ export const updateUserSchema = z.object({
 });
 
 // Types inferred from the schemas
-export type CreateUserRequest = z.infer<typeof createUserSchema>;
-export type UpdateUserRequest = z.infer<typeof updateUserSchema>;
+export type TCreateUserRequest = z.infer<typeof createUserSchema>;
+export type TUpdateUserRequest = z.infer<typeof updateUserSchema>;

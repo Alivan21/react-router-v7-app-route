@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser } from "../api";
-import { CreateUserRequest } from "../schema";
+import { TCreateUserRequest } from "../schema";
 import { QUERY_KEY } from "@/common/constants/query-keys";
 
 /**
@@ -10,7 +10,7 @@ export const useCreateUserMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (userData: CreateUserRequest) => createUser(userData),
+    mutationFn: (userData: TCreateUserRequest) => createUser(userData),
     onSuccess: async () => {
       // Invalidate and refetch the user list
       await queryClient.invalidateQueries({
