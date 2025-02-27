@@ -44,7 +44,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * Get a paginated list of users
  */
 export async function getUsers(params: TUserQueryParams): Promise<TUserListResponse> {
-  await delay(500); // Simulate network delay
+  await delay(500);
 
   // Add default values for optional parameters
   const page = params.page ?? 1;
@@ -90,7 +90,7 @@ export async function getUsers(params: TUserQueryParams): Promise<TUserListRespo
  * Get a user by ID
  */
 export async function getUserById(id: string): Promise<TUserResponse> {
-  await delay(300); // Simulate network delay
+  await delay(300);
 
   const user = mockUsers.find((user) => user.id === id && user.deleted_at === null);
 
@@ -111,7 +111,7 @@ export async function getUserById(id: string): Promise<TUserResponse> {
 export async function createUser(
   userData: Omit<TUserItem, "id" | "created_at" | "updated_at" | "deleted_at">
 ): Promise<TUserResponse> {
-  await delay(700); // Simulate network delay
+  await delay(700);
 
   const now = new Date().toISOString();
   const newUser: TUserItem = {
@@ -138,7 +138,7 @@ export async function updateUser(
   id: string,
   userData: Partial<Omit<TUserItem, "id" | "created_at" | "updated_at" | "deleted_at">>
 ): Promise<TUserResponse> {
-  await delay(600); // Simulate network delay
+  await delay(600);
 
   const userIndex = mockUsers.findIndex((user) => user.id === id && user.deleted_at === null);
 
@@ -166,7 +166,7 @@ export async function updateUser(
  * Delete a user (soft delete)
  */
 export async function deleteUser(id: string): Promise<TUserApiResponse> {
-  await delay(400); // Simulate network delay
+  await delay(400);
 
   const userIndex = mockUsers.findIndex((user) => user.id === id && user.deleted_at === null);
 

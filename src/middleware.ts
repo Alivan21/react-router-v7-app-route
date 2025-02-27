@@ -1,40 +1,60 @@
+import { SessionAuthCookies } from "./libs/cookies";
 import { registerMiddleware } from "./libs/react-router/middleware-config";
+import { decodeJwt } from "./utils/jwt";
 
 registerMiddleware({
-  // Using a simple path pattern that correctly matches the root path (/)
-  matcher: ".*",
-  handler: (request, context) => {
-    console.log("🔍 FIRST DEBUG MIDDLEWARE RUNNING");
-    console.log("Request:", request);
-    console.log("Context:", context);
-    console.log("🔍 MIDDLEWARE FINISHED");
+  // Index route handling middleware
+  matcher: "^/$",
+  handler: () => {
+    const token = SessionAuthCookies.get();
+    const isAuthenticated = token && decodeJwt(token) !== null;
+
+    if (isAuthenticated) {
+      return {
+        redirect: "/dashboard",
+      };
+    } else {
+      return {
+        redirect: "/login",
+      };
+    }
   },
 });
 
-// function getCookie(name: string): string | null {
-//   const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-//   return match ? decodeURIComponent(match[2]) : null;
-// }
+registerMiddleware({
+  // Match all routes
+  matcher: ".*",
+  handler: (request) => {
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+    const token = SessionAuthCookies.get();
+    const isAuthenticated = token && decodeJwt(token) !== null;
 
-// registerMiddleware({
-//   matcher: "/(.*)",
-//   handler: async (request, context) => {
-//     // Get auth token from headers or cookies
-//     const url = new URL(request.url);
-//     const token = request.headers.get("Authorization") || getCookie("auth-token");
+    const publicRoutes = [
+      "/login",
+      "/register",
+      "/forgot-password",
+      "/reset-password",
+      "/verify-email",
+    ];
 
-//     // Protected routes pattern (routes that require authentication)
-//     const isProtectedRoute = /^\/dashboard|\/admin|\/user/.test(context.path);
+    const isPublicRoute = publicRoutes.some(
+      (route) => pathname === route || pathname.startsWith(`${route}/`)
+    );
 
-//     if (isProtectedRoute && !token) {
-//       // Redirect to login if accessing protected route without token
-//       return {
-//         redirect: `/?redirect=${encodeURIComponent(url.pathname + url.search)}`,
-//       };
-//     }
+    if (!isPublicRoute && !isAuthenticated) {
+      console.log(`Protected route access attempt: ${pathname}`);
+      return {
+        redirect: `/login?redirect=${encodeURIComponent(pathname)}`,
+      };
+    }
 
-//     // Continue to the next middleware or the actual route
-//     await context.next();
-//     return;
-//   },
-// });
+    if (isPublicRoute && isAuthenticated) {
+      return {
+        redirect: "/dashboard",
+      };
+    }
+
+    return;
+  },
+});

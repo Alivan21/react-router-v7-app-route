@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import { createBrowserRouter, RouterProvider } from "react-router";
+import { SessionProvider } from "./components/providers/sessions.tsx";
 import { createRoutesFromFiles } from "./libs/react-router/file-based-route";
 import TanstackProvider from "./libs/tanstack-query/tanstack-provider.tsx";
 import "./index.css";
@@ -17,9 +18,11 @@ const router = createBrowserRouter([routes]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TanstackProvider>
-      <RouterProvider router={router} />
-      <Toaster position="top-right" />
-    </TanstackProvider>
+    <SessionProvider>
+      <TanstackProvider>
+        <RouterProvider router={router} />
+        <Toaster position="top-right" />
+      </TanstackProvider>
+    </SessionProvider>
   </StrictMode>
 );
