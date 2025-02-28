@@ -58,14 +58,19 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
       const storedToken = SessionAuthCookies.get();
 
       if (storedToken) {
+        httpClient.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
         const userData = decodeJwt<UserData>(storedToken);
         if (userData) {
           setToken(storedToken);
           setUser(userData);
           setIsAuthenticated(true);
-        } else {
-          SessionAuthCookies.remove();
         }
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+        setToken(null);
+        SessionAuthCookies.remove();
+        httpClient.defaults.headers.common.Authorization = undefined;
       }
 
       setIsLoading(false);
