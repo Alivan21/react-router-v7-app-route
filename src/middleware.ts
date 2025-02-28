@@ -43,7 +43,6 @@ registerMiddleware({
     );
 
     if (!isPublicRoute && !isAuthenticated) {
-      console.log(`Protected route access attempt: ${pathname}`);
       return {
         redirect: `/login?redirect=${encodeURIComponent(pathname)}`,
       };

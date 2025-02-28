@@ -48,16 +48,14 @@ export default tseslint.config(
       ...tsPlugin.configs["recommended"].rules,
       ...tsPlugin.configs["recommended-requiring-type-checking"].rules,
       ...importPlugin.configs.typescript.rules,
-      "react-refresh/only-export-components": "off",
       "react/jsx-no-useless-fragment": "warn",
       "react/jsx-curly-brace-presence": "warn",
       "react/display-name": "warn",
       "react/self-closing-comp": "warn",
       "react/jsx-sort-props": "warn",
+      "react-refresh/only-export-components": "off",
       "react/react-in-jsx-scope": "off",
-      "react/jsx-one-expression-per-line": "off",
       "react/prop-types": "off",
-      "jsx-a11y/anchor-is-valid": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "import/order": [
         "warn",
@@ -87,8 +85,7 @@ export default tseslint.config(
       "sort-imports": "off",
       "import/first": "off",
       "import/newline-after-import": "off",
-      "import/no-duplicates": "off",
-      "import/no-unresolved": "off",
+      "import/no-duplicates": "warn",
     },
     settings: {
       react: {

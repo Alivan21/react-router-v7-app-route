@@ -20,7 +20,7 @@ export const useUpdateUserMutation = (id: string) => {
       });
 
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEY.USER.DETAIL(id),
+        queryKey: [QUERY_KEY.USER.DETAIL, id],
       });
     },
   });

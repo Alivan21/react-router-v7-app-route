@@ -56,9 +56,9 @@ export const login = async (credentials: TLoginRequest): Promise<TLoginResponse>
     throw new Error("Invalid email or password");
   }
 
-  // Generate token expiry (1 hour from now)
+  // Generate token expiry (7 days from now)
   const expiryDate = new Date();
-  expiryDate.setHours(expiryDate.getHours() + 1);
+  expiryDate.setDate(expiryDate.getDate() + 7);
 
   // Create response matching TLoginResponse type
   const response: TLoginResponse = {

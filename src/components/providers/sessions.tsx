@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState, ReactNode, JSX } from "react";
+import React from "react";
 import { login, logout } from "@/api/auth/api";
 import { TLoginRequest } from "@/api/auth/schema";
+import { httpClient } from "@/libs/axios";
 import { SessionAuthCookies } from "@/libs/cookies";
 import { decodeJwt, JwtPayload as BaseJwtPayload } from "@/utils/jwt";
 
@@ -21,7 +22,7 @@ interface UserData extends BaseJwtPayload {
   role: string;
 }
 
-const SessionContext = createContext<SessionContextType>({
+const SessionContext = React.createContext<SessionContextType>({
   isAuthenticated: false,
   user: null,
   token: null,
@@ -36,7 +37,7 @@ const SessionContext = createContext<SessionContextType>({
  * @property {ReactNode} children - The child components
  */
 interface SessionProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 /**
@@ -44,17 +45,15 @@ interface SessionProviderProps {
  * @param {SessionProviderProps} props - The component props
  * @returns {JSX.Element} The rendered component
  */
-
 export const SessionProvider: React.FC<SessionProviderProps> = ({
   children,
-}: SessionProviderProps): JSX.Element => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<UserData | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+}: SessionProviderProps): React.JSX.Element => {
+  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+  const [user, setUser] = React.useState<UserData | null>(null);
+  const [token, setToken] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
-  // Initialize auth state from cookies on component mount
-  useEffect(() => {
+  React.useEffect(() => {
     const initializeAuth = () => {
       const storedToken = SessionAuthCookies.get();
 
@@ -80,19 +79,21 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
       setIsLoading(true);
       const response = await login(credentials);
       const { token, expires_at } = response.data;
+      httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-      // Save token to cookie with expiration from the API response
       const expiryDate = new Date(expires_at);
       SessionAuthCookies.set(token, {
         expires: expiryDate,
       });
 
-      // Update state
       setToken(token);
       setUser(decodeJwt<UserData>(token));
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Login failed:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+      setToken(null);
       throw error;
     } finally {
       setIsLoading(false);
@@ -103,8 +104,8 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
     try {
       setIsLoading(true);
       await logout();
-      // Clear auth state
       SessionAuthCookies.remove();
+      httpClient.defaults.headers.common.Authorization = undefined;
       setToken(null);
       setUser(null);
       setIsAuthenticated(false);
@@ -116,14 +117,17 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
     }
   };
 
-  const contextValue: SessionContextType = {
-    isAuthenticated,
-    user,
-    token,
-    login: handleLogin,
-    logout: handleLogout,
-    isLoading,
-  };
+  const contextValue = React.useMemo(
+    () => ({
+      isAuthenticated,
+      user,
+      token,
+      login: handleLogin,
+      logout: handleLogout,
+      isLoading,
+    }),
+    [isAuthenticated, user, token, isLoading]
+  );
 
   return <SessionContext.Provider value={contextValue}>{children}</SessionContext.Provider>;
 };
