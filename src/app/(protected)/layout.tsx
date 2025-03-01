@@ -1,12 +1,14 @@
 import { Outlet } from "react-router";
+import { DashboardSidebar } from "@/components/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function ProtectedLayout() {
   return (
-    <div className="min-h-screen bg-blue-600">
-      ProtectedLayout
-      <div>
+    <SidebarProvider>
+      <DashboardSidebar />
+      <SidebarInset>
         <Outlet />
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

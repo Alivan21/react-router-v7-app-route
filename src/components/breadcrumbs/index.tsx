@@ -21,7 +21,7 @@ export function Breadcrumbs({ items = [], showHomeIcon = true }: BreadcrumbsProp
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex border-b px-4 py-3">
+    <nav aria-label="Breadcrumb" className="flex px-4 py-3">
       <ol className="flex flex-wrap items-center space-x-2">
         {showHomeIcon && (
           <li className="inline-flex items-center">

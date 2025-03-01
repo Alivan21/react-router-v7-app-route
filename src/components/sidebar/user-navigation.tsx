@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "../ui/button";
 
 export interface UserNavigationProps {
   user: {
@@ -33,7 +34,7 @@ export function UserNavigation({ user }: UserNavigationProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
               size="lg"
             >
               <Avatar className="h-8 w-8 rounded-lg">
@@ -67,15 +68,29 @@ export function UserNavigation({ user }: UserNavigationProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem asChild>
+                <Button
+                  className="w-full cursor-pointer justify-start font-normal"
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                >
+                  <BadgeCheck />
+                  Account
+                </Button>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem asChild>
+              <Button
+                className="w-full cursor-pointer justify-start font-normal"
+                size="sm"
+                type="button"
+                variant="ghost"
+              >
+                <LogOut />
+                Log out
+              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

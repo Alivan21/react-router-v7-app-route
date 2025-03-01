@@ -1,13 +1,16 @@
-import { httpClient } from "@/libs/axios";
+import { BreadcrumbsItem } from "@/components/breadcrumbs";
+import PageContainer from "@/components/providers/page-container";
 
 export default function DashboardPage() {
-  const testButton = () => {
-    console.log(httpClient.defaults.headers.common.Authorization);
-  };
+  const breadcrumbs: BreadcrumbsItem[] = [
+    {
+      text: "Dashboard",
+      url: "/dashboard",
+    },
+  ];
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <button onClick={testButton}>Test</button>
-    </div>
+    <PageContainer breadcrumbs={breadcrumbs} title="Dashboard">
+      <p>Testing</p>
+    </PageContainer>
   );
 }

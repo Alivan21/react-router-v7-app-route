@@ -16,11 +16,13 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { UserNavigation } from "./user-navigation";
 
 export function DashboardSidebar() {
   const pathname = useLocation().pathname;
+  const { state } = useSidebar();
 
   return (
     <Sidebar collapsible="icon">
@@ -62,9 +64,10 @@ export function DashboardSidebar() {
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
+                            className="cursor-pointer"
                             tooltip={{
                               children: item.title,
-                              hidden: false,
+                              hidden: state === "expanded",
                             }}
                           >
                             <item.icon className="size-4" />
@@ -96,7 +99,7 @@ export function DashboardSidebar() {
                       isActive={pathname === item.href}
                       tooltip={{
                         children: item.title,
-                        hidden: false,
+                        hidden: state === "expanded",
                       }}
                     >
                       <Link to={item.href}>
