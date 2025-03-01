@@ -1,5 +1,5 @@
 import React from "react";
-import { login, logout } from "@/api/auth/api";
+import { login, logout } from "@/api/auth";
 import { TLoginRequest } from "@/api/auth/schema";
 import { httpClient } from "@/libs/axios";
 import { SessionAuthCookies } from "@/libs/cookies";

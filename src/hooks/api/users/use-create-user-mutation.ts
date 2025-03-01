@@ -1,26 +1,21 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { createUser } from "@/api/users";
+import { TCreateUserRequest } from "@/api/users/schema";
 import { QUERY_KEY } from "@/common/constants/query-keys";
 import { useMutation } from "@/hooks/request/use-mutation";
-import { deleteUser } from "../api";
 
 /**
- * Hook to delete a user
- * @param id - The ID of the user to delete
+ * Hook for creating a new user
  */
-export const useDeleteUserMutation = (id: string) => {
+export const useCreateUserMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => deleteUser(id),
+    mutationFn: (userData: TCreateUserRequest) => createUser(userData),
     onSuccess: async () => {
       // Invalidate and refetch the user list
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.USER.LIST],
-      });
-
-      // Invalidate and refetch the user detail
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.USER.DETAIL, id],
       });
     },
   });
