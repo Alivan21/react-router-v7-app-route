@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { ROUTES } from "@/common/constants/routes";
 
 export interface BreadcrumbsItem {
-  text: string;
+  text: string | React.ReactNode;
   url: string;
 }
 
