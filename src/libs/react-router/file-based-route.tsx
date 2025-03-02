@@ -27,6 +27,7 @@ interface ExtendedRouteObject extends Omit<RouteObject, "handle" | "children"> {
   handle?: RouteHandle;
   children?: ExtendedRouteObject[];
   HydrateFallback?: React.ComponentType;
+  LoadingComponent?: React.ComponentType;
 }
 
 type PageModule = () => Promise<PageModuleExports>;
@@ -163,6 +164,8 @@ function createRoute(args: {
 
     route.element = <args.PageComponent />;
     route.HydrateFallback = FallbackComponent;
+    route.LoadingComponent = FallbackComponent;
+
     route.action = args.action;
     route.loader = args.loader;
 
@@ -311,6 +314,7 @@ function handleLayoutMerge(
     Object.assign(target, {
       element: source.element,
       HydrateFallback: source.HydrateFallback,
+      LoadingComponent: source.LoadingComponent,
       action: source.action,
       loader: source.loader,
       handle: source.handle,
@@ -343,6 +347,7 @@ function handlePageMerge(
       index: true,
       element: source.element,
       HydrateFallback: source.HydrateFallback,
+      LoadingComponent: source.LoadingComponent,
       action: source.action,
       loader: source.loader,
       handle: source.handle,
