@@ -65,7 +65,7 @@ export default function UserPage() {
   );
 
   return (
-    <PageContainer breadcrumbs={breadcrumbs} title="User Management">
+    <PageContainer breadcrumbs={breadcrumbs} title="User Management" topActions={<TopAction />}>
       <DataTable
         columns={columns}
         data={data?.data || []}
@@ -78,3 +78,13 @@ export default function UserPage() {
     </PageContainer>
   );
 }
+
+const TopAction = () => {
+  return (
+    <div className="flex gap-2">
+      <Button variant="outline">Import</Button>
+      <Button variant="outline">Export</Button>
+      <Button>New User</Button>
+    </div>
+  );
+};

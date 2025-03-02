@@ -6,6 +6,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 
 interface PageContainerProps {
   children?: React.ReactNode;
+  topActions?: React.ReactNode;
   breadcrumbs?: BreadcrumbsItem[];
   className?: string;
   showHomeIcon?: boolean;
@@ -14,6 +15,7 @@ interface PageContainerProps {
 
 export default function PageContainer({
   children,
+  topActions,
   breadcrumbs = [],
   className,
   showHomeIcon = true,
@@ -27,10 +29,11 @@ export default function PageContainer({
           <Separator className="!h-6" orientation="vertical" />
           <Breadcrumbs items={breadcrumbs} showHomeIcon={showHomeIcon} />
         </header>
-        <main
-          className={cn("flex min-h-0 flex-1 flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8", className)}
-        >
-          {title && <h1 className="text-2xl font-bold tracking-tight">{title}</h1>}
+        <main className={cn("flex min-h-0 flex-1 flex-col gap-4 px-4 py-4 lg:px-8", className)}>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            {title && <h1 className="text-2xl font-bold tracking-tight">{title}</h1>}
+            {topActions && <div className="flex justify-start">{topActions}</div>}
+          </div>
           {children}
         </main>
       </div>

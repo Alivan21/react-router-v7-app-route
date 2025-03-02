@@ -1,4 +1,6 @@
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -15,6 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useSession } from "../providers/sessions";
 import { Button } from "../ui/button";
 
 export interface UserNavigationProps {
@@ -27,6 +30,17 @@ export interface UserNavigationProps {
 
 export function UserNavigation({ user }: UserNavigationProps) {
   const { isMobile } = useSidebar();
+  const { logout } = useSession();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      await navigate("/");
+      toast.success("Logout successful");
+    } catch {
+      toast.error("Logout failed");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -84,6 +98,9 @@ export function UserNavigation({ user }: UserNavigationProps) {
             <DropdownMenuItem asChild>
               <Button
                 className="w-full cursor-pointer justify-start font-normal"
+                onClick={() => {
+                  void handleLogout();
+                }}
                 size="sm"
                 type="button"
                 variant="ghost"

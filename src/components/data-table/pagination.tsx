@@ -16,7 +16,7 @@ interface DataTablePaginationProps<TData> {
 
 export function DataTablePagination<TData>({ table, totalCount }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex flex-col items-center justify-between gap-4 px-2 sm:flex-row">
+    <div className="flex flex-col items-center justify-between gap-4 px-2 lg:flex-row">
       <div className="text-muted-foreground text-sm">
         {totalCount > 0 ? (
           <>
