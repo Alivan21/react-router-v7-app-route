@@ -1,4 +1,4 @@
-import { BarChart3, Calendar, Home, Settings, Users } from "lucide-react";
+import { BarChart3, Home, Users2 } from "lucide-react";
 import { ROUTES } from "./routes";
 
 export const SIDEBAR_ITEMS = [
@@ -6,6 +6,11 @@ export const SIDEBAR_ITEMS = [
     title: "Dashboard",
     href: ROUTES.DASHBOARD,
     icon: Home,
+  },
+  {
+    title: "Users",
+    href: ROUTES.USERS,
+    icon: Users2,
   },
   {
     title: "Analytics",
@@ -21,30 +26,5 @@ export const SIDEBAR_ITEMS = [
         href: ROUTES.ANALYTICS.REPORTS,
       },
     ],
-  },
-  {
-    title: "Customers",
-    href: "#",
-    icon: Users,
-    items: [
-      {
-        title: "All Customers",
-        href: ROUTES.CUSTOMERS.ALL,
-      },
-      {
-        title: "Active Customers",
-        href: ROUTES.CUSTOMERS.ACTIVE,
-      },
-    ],
-  },
-  {
-    title: "Calendar",
-    href: ROUTES.CALENDAR,
-    icon: Calendar,
-  },
-  {
-    title: "Settings",
-    href: ROUTES.SETTINGS,
-    icon: Settings,
   },
 ];

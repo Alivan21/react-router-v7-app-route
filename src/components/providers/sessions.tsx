@@ -14,7 +14,9 @@ interface SessionContextType {
   isLoading: boolean;
 }
 
-// User data parsed from the JWT token
+/**
+ * UserData interface for the JWT payload
+ */
 interface UserData extends BaseJwtPayload {
   id: string;
   email: string;
