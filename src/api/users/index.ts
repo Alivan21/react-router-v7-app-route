@@ -16,6 +16,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
     deleted_at: null,
+    status: "active",
   },
   {
     id: "2",
@@ -25,6 +26,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-02T00:00:00Z",
     updated_at: "2023-01-02T00:00:00Z",
     deleted_at: null,
+    status: "inactive",
   },
   {
     id: "3",
@@ -34,6 +36,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-03T00:00:00Z",
     updated_at: "2023-01-03T00:00:00Z",
     deleted_at: null,
+    status: "active",
   },
   {
     id: "4",
@@ -43,6 +46,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-04T00:00:00Z",
     updated_at: "2023-01-04T00:00:00Z",
     deleted_at: null,
+    status: "inactive",
   },
   {
     id: "5",
@@ -52,6 +56,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-05T00:00:00Z",
     updated_at: "2023-01-05T00:00:00Z",
     deleted_at: null,
+    status: "active",
   },
   {
     id: "6",
@@ -61,6 +66,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-06T00:00:00Z",
     updated_at: "2023-01-06T00:00:00Z",
     deleted_at: null,
+    status: "inactive",
   },
   {
     id: "7",
@@ -70,6 +76,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-07T00:00:00Z",
     updated_at: "2023-01-07T00:00:00Z",
     deleted_at: null,
+    status: "active",
   },
   {
     id: "8",
@@ -79,6 +86,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-08T00:00:00Z",
     updated_at: "2023-01-08T00:00:00Z",
     deleted_at: null,
+    status: "inactive",
   },
   {
     id: "9",
@@ -88,6 +96,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-09T00:00:00Z",
     updated_at: "2023-01-09T00:00:00Z",
     deleted_at: null,
+    status: "active",
   },
   {
     id: "10",
@@ -97,6 +106,7 @@ const mockUsers: TUserItem[] = [
     created_at: "2023-01-10T00:00:00Z",
     updated_at: "2023-01-10T00:00:00Z",
     deleted_at: null,
+    status: "inactive",
   },
 ];
 

@@ -21,7 +21,7 @@ export default function ErrorPage() {
           We apologize for the inconvenience. An error occurred while processing your request.
         </p>
         <div className="mt-4 flex flex-col gap-4 sm:flex-row">
-          <Button className="mt-4" onClick={reset}>
+          <Button onClick={reset}>
             <RefreshCw className="mr-2 h-4 w-4" />
             Try again
           </Button>

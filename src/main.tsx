@@ -5,8 +5,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import { SessionProvider } from "./components/providers/sessions.tsx";
 import { createRoutesFromFiles } from "./libs/react-router/file-based-route";
 import TanstackProvider from "./libs/tanstack-query/tanstack-provider.tsx";
-import "./index.css";
 import "./middleware.ts";
+import "./index.css";
 
 const pageFiles = import.meta.glob("./app/**/*(page|layout).tsx");
 const errorFiles = import.meta.glob("./app/**/*error.tsx");

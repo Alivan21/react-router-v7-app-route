@@ -1,7 +1,10 @@
+import { ColumnDef } from "@tanstack/react-table";
 import { Edit2, Eye, Trash2 } from "lucide-react";
 import { useMemo } from "react";
+import { TUserItem } from "@/api/users/type";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
 import { DataTable } from "@/components/data-table";
+import { FilterableColumn } from "@/components/data-table/filters";
 import PageContainer from "@/components/providers/page-container";
 import { Button } from "@/components/ui/button";
 import { useUsersQuery } from "@/hooks/api/users/use-users-query";
@@ -24,12 +27,13 @@ export default function UserPage() {
     search: queryParams.search,
   });
 
-  const columns = useMemo(
+  const columns: ColumnDef<TUserItem>[] = useMemo(
     () => [
       {
         accessorKey: "id",
         header: "ID",
         enableSorting: true,
+        cell: ({ row }) => <span>{row.index + 1}</span>,
       },
       {
         accessorKey: "name",
@@ -43,6 +47,10 @@ export default function UserPage() {
       {
         accessorKey: "phone_number",
         header: "Phone",
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
       },
       {
         header: "Actions",
@@ -64,11 +72,26 @@ export default function UserPage() {
     []
   );
 
+  const filterComponents: FilterableColumn[] = useMemo(
+    () => [
+      {
+        id: "status",
+        title: "Status",
+        options: [
+          { label: "Active", value: "active" },
+          { label: "Inactive", value: "inactive" },
+        ],
+      },
+    ],
+    []
+  );
+
   return (
     <PageContainer breadcrumbs={breadcrumbs} title="User Management" topActions={<TopAction />}>
       <DataTable
         columns={columns}
         data={data?.data || []}
+        filterableColumns={filterComponents}
         isError={isError}
         isLoading={isLoading}
         pageCount={data?.meta?.total_page || 0}

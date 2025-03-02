@@ -33,7 +33,7 @@ export function DataTableFilters<TData>({
           Filter
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[200px]">
+      <DropdownMenuContent align="end" className="w-56">
         {filterableColumns.map((column) => (
           <div key={column.id}>
             <DropdownMenuLabel>{column.title}</DropdownMenuLabel>
@@ -45,7 +45,6 @@ export function DataTableFilters<TData>({
                 onCheckedChange={() => {
                   const columnFilter = table.getColumn(column.id);
                   const currentValue = columnFilter?.getFilterValue();
-
                   columnFilter?.setFilterValue(
                     currentValue === option.value ? undefined : option.value
                   );
