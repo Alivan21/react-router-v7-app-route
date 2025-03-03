@@ -1,77 +1,221 @@
+import { format } from "date-fns";
+import { type Locale, enUS } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 import { DayPicker } from "react-day-picker";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/libs/clsx";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+function genMonths(locale: Pick<Locale, "options" | "localize" | "formatLong">) {
+  return Array.from({ length: 12 }, (_, i) => ({
+    value: i,
+    label: format(new Date(2021, i), "MMMM", { locale }),
+  }));
+}
+
+function genYears(pastYears = 75, futureYears = 2) {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  return Array.from({ length: pastYears + futureYears + 1 }, (_, i) => ({
+    value: currentYear - pastYears + i,
+    label: (currentYear - pastYears + i).toString(),
+  }));
+}
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  pastYears = 65,
+  futureYears = 2,
   ...props
-}: React.ComponentProps<typeof DayPicker>) {
+}: CalendarProps & { pastYears?: number; futureYears?: number }) {
+  const MONTHS = React.useMemo(() => {
+    let locale: Pick<Locale, "options" | "localize" | "formatLong"> = enUS;
+    const { options, localize, formatLong } = props.locale || {};
+    if (options && localize && formatLong) {
+      locale = {
+        options,
+        localize,
+        formatLong,
+      };
+    }
+    return genMonths(locale);
+  }, [props.locale]);
+
+  const YEARS = React.useMemo(() => genYears(pastYears, futureYears), [pastYears, futureYears]);
+
+  const disableLeftNavigation = () => {
+    const today = new Date();
+    const startDate = new Date(today.getFullYear() - pastYears, 0, 1);
+    if (props.month) {
+      return (
+        props.month.getMonth() === startDate.getMonth() &&
+        props.month.getFullYear() === startDate.getFullYear()
+      );
+    }
+    return false;
+  };
+
+  const disableRightNavigation = () => {
+    const today = new Date();
+    const endDate = new Date(today.getFullYear() + futureYears, 11, 31);
+    if (props.month) {
+      return (
+        props.month.getMonth() === endDate.getMonth() &&
+        props.month.getFullYear() === endDate.getFullYear()
+      );
+    }
+    return false;
+  };
+
   return (
     <DayPicker
       className={cn("p-3", className)}
       classNames={{
-        months: "flex flex-col sm:flex-row gap-2",
-        month: "flex flex-col gap-4",
-        caption: "flex justify-center pt-1 relative items-center w-full",
+        months: "flex flex-col sm:flex-row space-y-4 sm:space-y-0 justify-center",
+        month: "flex flex-col items-center space-y-4",
+        month_caption: "flex justify-center pt-1 relative items-center",
         caption_label: "text-sm font-medium",
-        nav: "flex items-center gap-1",
-        nav_button: cn(
-          buttonVariants({ variant: "outline" }),
-          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
-        ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
-        table: "w-full border-collapse space-x-1",
-        head_row: "flex",
-        head_cell: "text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]",
-        row: "flex w-full mt-2",
-        cell: cn(
-          "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-range-end)]:rounded-r-md",
-          props.mode === "range"
-            ? "[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md"
-            : "[&:has([aria-selected])]:rounded-md"
-        ),
-        day: cn(
+        nav: "space-x-1 flex items-center ",
+        button_previous: "hidden",
+        button_next: "hidden",
+        month_grid: "w-full border-collapse space-y-1",
+        weekdays: cn("flex", props.showWeekNumber && "justify-end"),
+        weekday: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+        week: "flex w-full mt-2",
+        day: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 rounded-1",
+        day_button: cn(
           buttonVariants({ variant: "ghost" }),
-          "size-8 p-0 font-normal aria-selected:opacity-100"
+          "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-l-md rounded-r-md"
         ),
-        day_range_start:
-          "day-range-start aria-selected:bg-primary aria-selected:text-primary-foreground",
-        day_range_end:
-          "day-range-end aria-selected:bg-primary aria-selected:text-primary-foreground",
-        day_selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        day_today: "bg-accent text-accent-foreground",
-        day_outside: "day-outside text-muted-foreground aria-selected:text-muted-foreground",
-        day_disabled: "text-muted-foreground opacity-50",
-        day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
-        day_hidden: "invisible",
+        range_end: "day-range-end",
+        selected:
+          "bg-primary text-primary-foreground hover:!bg-primary hover:!text-primary-foreground focus:bg-primary focus:text-primary-foreground rounded-l-md rounded-r-md pointer-events-none",
+        today: "bg-accent text-accent-foreground",
+        outside:
+          "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
+        disabled: "text-muted-foreground opacity-50",
+        range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
+        hidden: "invisible",
         ...classNames,
       }}
       components={{
-        PreviousMonthButton({ className, ...props }) {
+        Chevron: ({ ...props }) =>
+          props.orientation === "left" ? (
+            <ChevronLeft className="h-5 w-5" />
+          ) : (
+            <ChevronRight className="h-5 w-5" />
+          ),
+        MonthCaption: ({ calendarMonth }) => {
           return (
-            <Button asChild className={cn("!size-1", className as string)} size="icon" {...props}>
-              <ChevronLeft className="!size-1" />
-            </Button>
+            <div className="flex w-full items-center justify-between px-1">
+              <button
+                aria-label="Previous month"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "icon" }),
+                  "hover:bg-accent hover:text-accent-foreground size-7 transition-colors",
+                  disableLeftNavigation() && "pointer-events-none opacity-30"
+                )}
+                disabled={disableLeftNavigation()}
+                onClick={() => {
+                  const newDate = new Date(calendarMonth.date);
+                  newDate.setMonth(newDate.getMonth() - 1);
+                  props.onMonthChange?.(newDate);
+                }}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <div className="bg-background flex items-center gap-1.5 rounded-lg px-3 transition-colors">
+                <Select
+                  defaultValue={calendarMonth.date.getMonth().toString()}
+                  onValueChange={(value) => {
+                    const newDate = new Date(calendarMonth.date);
+                    newDate.setMonth(Number.parseInt(value, 10));
+                    props.onMonthChange?.(newDate);
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label="Select month"
+                    className="hover:bg-accent/50 text-foreground h-auto min-w-24 border-0 border-none p-0 py-0.5 ps-1 shadow-none outline-none focus:ring-0 focus:ring-offset-0"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent align="center" className="max-h-60" position="popper">
+                    {MONTHS.map((month) => (
+                      <SelectItem
+                        className="cursor-pointer"
+                        key={month.value}
+                        value={month.value.toString()}
+                      >
+                        {month.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  defaultValue={calendarMonth.date.getFullYear().toString()}
+                  onValueChange={(value) => {
+                    const newDate = new Date(calendarMonth.date);
+                    newDate.setFullYear(Number.parseInt(value, 10));
+                    props.onMonthChange?.(newDate);
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label="Select year"
+                    className="hover:bg-accent/50 text-foreground h-auto w-fit border-0 border-none p-0 py-0.5 ps-1 shadow-none outline-none focus:ring-0 focus:ring-offset-0"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent align="center" className="max-h-60" position="popper">
+                    {YEARS.map((year) => (
+                      <SelectItem
+                        className="cursor-pointer"
+                        key={year.value}
+                        value={year.value.toString()}
+                      >
+                        {year.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <button
+                aria-label="Next month"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "icon" }),
+                  "hover:bg-accent hover:text-accent-foreground size-7 transition-colors",
+                  disableLeftNavigation() && "pointer-events-none opacity-30"
+                )}
+                disabled={disableRightNavigation()}
+                onClick={() => {
+                  const newDate = new Date(calendarMonth.date);
+                  newDate.setMonth(newDate.getMonth() + 1);
+                  props.onMonthChange?.(newDate);
+                }}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
           );
         },
-        NextMonthButton: ({ className, ...props }) => (
-          <Button asChild className={cn("!size-1", className as string)} size="icon" {...props}>
-            <ChevronRight className="!size-1" />
-          </Button>
-        ),
       }}
       showOutsideDays={showOutsideDays}
       {...props}
     />
   );
 }
+
+Calendar.displayName = "Calendar";
 
 export { Calendar };
