@@ -1,4 +1,3 @@
-// libs/react-router/middleware.ts
 import { LoaderFunction, redirect } from "react-router";
 
 // Middleware interface

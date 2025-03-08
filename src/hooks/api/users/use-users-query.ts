@@ -1,4 +1,3 @@
-// src/hooks/api/users/use-users-query.ts
 import { getUsers } from "@/api/users";
 import { TUserQueryParams } from "@/api/users/type";
 import { QUERY_KEY } from "@/common/constants/query-keys";
