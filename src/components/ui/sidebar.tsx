@@ -148,7 +148,7 @@ function Sidebar({
   className,
   children,
   ...props
-}: React.ComponentProps<"div"> & {
+}: React.ComponentProps<"aside"> & {
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
@@ -157,7 +157,7 @@ function Sidebar({
 
   if (collapsible === "none") {
     return (
-      <div
+      <aside
         className={cn(
           "bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col",
           className
@@ -166,7 +166,7 @@ function Sidebar({
         {...props}
       >
         {children}
-      </div>
+      </aside>
     );
   }
 
@@ -196,7 +196,7 @@ function Sidebar({
   }
 
   return (
-    <div
+    <aside
       className="group peer text-sidebar-foreground hidden md:block"
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-side={side}
@@ -215,7 +215,7 @@ function Sidebar({
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
         )}
       />
-      <div
+      <aside
         className={cn(
           "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
           side === "left"
@@ -235,8 +235,8 @@ function Sidebar({
         >
           {children}
         </div>
-      </div>
-    </div>
+      </aside>
+    </aside>
   );
 }
 
@@ -287,9 +287,9 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   );
 }
 
-function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
+function SidebarInset({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <main
+    <div
       className={cn(
         "bg-background relative flex min-h-svh w-full flex-1 flex-col",
         "peer-data-[variant=inset]:min-h-[calc(100svh-(--spacing(4)))] md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",

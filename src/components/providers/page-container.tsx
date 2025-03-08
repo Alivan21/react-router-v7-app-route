@@ -30,10 +30,10 @@ export default function PageContainer({
           <Breadcrumbs items={breadcrumbs} showHomeIcon={showHomeIcon} />
         </header>
         <main className={cn("flex min-h-0 flex-1 flex-col gap-4 px-4 py-4 lg:px-8", className)}>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             {title && <h1 className="text-2xl font-bold tracking-tight">{title}</h1>}
-            {topActions && <div className="flex justify-start">{topActions}</div>}
-          </div>
+            {topActions && topActions}
+          </section>
           {children}
         </main>
       </div>
