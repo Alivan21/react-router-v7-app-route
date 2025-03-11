@@ -141,6 +141,33 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
       };
     }
 
+    const MemoizedTimePicker = React.memo(TimePicker);
+
+    const handleTimeChange = React.useCallback(
+      (
+        value:
+          | Date
+          | ((prevState: Date) => Date)
+          | ((prevState: Date | undefined) => Date | undefined)
+          | undefined
+      ) => {
+        if (!value) return;
+
+        let dateValue: Date;
+        if (typeof value === "function") {
+          const currentDate = month || new Date();
+          dateValue = value(currentDate) as Date;
+        } else {
+          dateValue = value;
+        }
+
+        onChange?.(dateValue);
+        setDisplayDate(dateValue);
+        setMonth(dateValue);
+      },
+      [onChange, month]
+    );
+
     return (
       <Popover>
         <PopoverTrigger asChild disabled={disabled}>
@@ -190,17 +217,11 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
           />
           {granularity !== "day" && (
             <div className="border-border border-t pt-2">
-              <TimePicker
+              <MemoizedTimePicker
                 date={month}
                 granularity={granularity}
                 hourCycle={hourCycle}
-                onChange={(value) => {
-                  onChange?.(value);
-                  setDisplayDate(value);
-                  if (value) {
-                    setMonth(value);
-                  }
-                }}
+                onChange={handleTimeChange}
               />
             </div>
           )}

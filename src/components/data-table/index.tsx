@@ -121,7 +121,7 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: (newFilters) => {
       setColumnFilters(newFilters);
 
-      const updatedParams: Record<string, string | number | null> = { page: 1 };
+      const updatedParams: Record<string, string | number | null> = {};
 
       const filtersArray =
         typeof newFilters === "function" ? newFilters(columnFilters) : newFilters;
