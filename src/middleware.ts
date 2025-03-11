@@ -1,5 +1,5 @@
 import { SessionAuthCookies } from "./libs/cookies";
-import { registerMiddleware } from "./libs/react-router/middleware-config";
+import { registerMiddleware } from "./libs/react-router";
 import { decodeJwt } from "./utils/jwt";
 
 registerMiddleware({

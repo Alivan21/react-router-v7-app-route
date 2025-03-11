@@ -1,30 +1,5 @@
 import { LoaderFunction, redirect } from "react-router";
-
-// Middleware interface
-export interface Middleware {
-  matcher?: string | RegExp | ((path: string) => boolean);
-  handler: MiddlewareHandler;
-}
-
-// Middleware handler function type
-export type MiddlewareHandler = (
-  request: Request,
-  context: MiddlewareContext
-) => Promise<MiddlewareResponse | void> | MiddlewareResponse | void;
-
-// Context provided to middleware
-export interface MiddlewareContext {
-  params: Record<string, string | undefined>;
-  path: string;
-  next: () => Promise<unknown>;
-}
-
-// Response from middleware
-export interface MiddlewareResponse {
-  redirect?: string | Response;
-  rewrite?: string;
-  headers?: Record<string, string>;
-}
+import { Middleware, MiddlewareContext } from "../types/middleware";
 
 // Store registered middlewares
 const middlewares: Middleware[] = [];
@@ -115,7 +90,7 @@ export function withMiddleware(originalLoader?: LoaderFunction): LoaderFunction 
       }
 
       if (result.rewrite) {
-        // Handle path rewrite - would need to create a new request and update args
+        // Handle path rewrite
         const newUrl = new URL(result.rewrite, url.origin);
         const newRequest = new Request(newUrl, request);
         return originalLoader ? originalLoader({ ...args, request: newRequest }) : null;
@@ -123,7 +98,6 @@ export function withMiddleware(originalLoader?: LoaderFunction): LoaderFunction 
 
       if (result.headers) {
         // Headers would be applied when we're handling a response
-        // For now, we just continue the chain
         return executeMiddlewareChain();
       }
 
