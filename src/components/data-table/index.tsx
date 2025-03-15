@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"; // Add these imports
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router";
 import { Input } from "@/components/ui/input";
@@ -31,8 +31,11 @@ import { DataTableFilters, FilterableColumn } from "./filters";
 import { DataTablePagination } from "./pagination";
 import { DataTableViewOptions } from "./view-options";
 
+export type TableColumnDef<TData, TValue = unknown> = ColumnDef<TData, TValue> & {
+  width?: number;
+};
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+  columns: TableColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
   isError: boolean;
@@ -40,6 +43,10 @@ interface DataTableProps<TData, TValue> {
   pageCount: number;
   searchColumn?: string;
   filterableColumns?: FilterableColumn[];
+}
+
+function getColumnWidth<TData, TValue = unknown>(columnDef: TableColumnDef<TData, TValue>): string {
+  return columnDef.width ? `${columnDef.width}px` : "auto";
 }
 
 export function DataTable<TData, TValue>({
@@ -190,7 +197,10 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="hover:bg-transparent" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={{ width: getColumnWidth(header.column.columnDef) }}
+                  >
                     {header.isPlaceholder ? null : (
                       <div>
                         {header.column.columnDef.enableSorting ? (
@@ -231,8 +241,12 @@ export function DataTable<TData, TValue>({
             {isLoading ? (
               Array.from({ length: 10 }).map((_, index) => (
                 <TableRow key={index}>
-                  {columns.map((_, colIndex) => (
-                    <TableCell className="h-14" key={colIndex}>
+                  {columns.map((column, colIndex) => (
+                    <TableCell
+                      className="h-14"
+                      key={colIndex}
+                      style={{ width: getColumnWidth(column) }}
+                    >
                       <div className="bg-muted h-4 animate-pulse rounded" />
                     </TableCell>
                   ))}
@@ -242,7 +256,10 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow data-state={row.getIsSelected() && "selected"} key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={{ width: getColumnWidth(cell.column.columnDef) }}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

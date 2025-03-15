@@ -1,9 +1,8 @@
-import { ColumnDef } from "@tanstack/react-table";
 import { Edit2, Eye, Trash2 } from "lucide-react";
 import { useMemo } from "react";
 import { TUserItem } from "@/api/users/type";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
-import { DataTable } from "@/components/data-table";
+import { DataTable, TableColumnDef } from "@/components/data-table";
 import { FilterableColumn } from "@/components/data-table/filters";
 import PageContainer from "@/components/providers/page-container";
 import { Button } from "@/components/ui/button";
@@ -27,50 +26,47 @@ export default function UserPage() {
     search: queryParams.search,
   });
 
-  const columns: ColumnDef<TUserItem>[] = useMemo(
-    () => [
-      {
-        accessorKey: "id",
-        header: "ID",
-        enableSorting: true,
-        cell: ({ row }) => <span>{row.index + 1}</span>,
-      },
-      {
-        accessorKey: "name",
-        header: "Name",
-        enableSorting: true,
-      },
-      {
-        accessorKey: "email",
-        header: "Email",
-      },
-      {
-        accessorKey: "phone_number",
-        header: "Phone",
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-      },
-      {
-        header: "Actions",
-        cell: () => (
-          <div className="flex gap-1">
-            <Button size="icon">
-              <Eye />
-            </Button>
-            <Button size="icon">
-              <Edit2 />
-            </Button>
-            <Button size="icon">
-              <Trash2 />
-            </Button>
-          </div>
-        ),
-      },
-    ],
-    []
-  );
+  const columns: TableColumnDef<TUserItem>[] = [
+    {
+      accessorKey: "id",
+      header: "ID",
+      enableSorting: true,
+      cell: ({ row }) => <span>{row.index + 1}</span>,
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      enableSorting: true,
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      accessorKey: "phone_number",
+      header: "Phone",
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+    },
+    {
+      header: "Actions",
+      cell: () => (
+        <div className="flex gap-1">
+          <Button size="icon">
+            <Eye />
+          </Button>
+          <Button size="icon">
+            <Edit2 />
+          </Button>
+          <Button size="icon">
+            <Trash2 />
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   const filterComponents: FilterableColumn[] = useMemo(
     () => [

@@ -32,14 +32,11 @@ export function createRoutesFromFiles(
   return routes;
 }
 
-// Export public middleware API
 export { registerMiddleware };
 export type { Middleware };
 
-// Export utility functions for potential extensions
 export * from "./utils/path";
 export * from "./utils/route";
 
-// Export types
 export * from "./types/route";
 export * from "./types/middleware";

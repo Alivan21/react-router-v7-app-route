@@ -141,8 +141,6 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
       };
     }
 
-    const MemoizedTimePicker = React.memo(TimePicker);
-
     const handleTimeChange = React.useCallback(
       (
         value:
@@ -217,7 +215,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
           />
           {granularity !== "day" && (
             <div className="border-border border-t pt-2">
-              <MemoizedTimePicker
+              <TimePicker
                 date={month}
                 granularity={granularity}
                 hourCycle={hourCycle}
