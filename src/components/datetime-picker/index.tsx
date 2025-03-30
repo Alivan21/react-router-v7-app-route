@@ -171,7 +171,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
         <PopoverTrigger asChild disabled={disabled}>
           <Button
             className={cn(
-              "w-full justify-start text-left font-normal",
+              "hover:bg-accent/30 hover:border-accent w-full justify-start text-left font-normal transition-colors",
               !displayDate && "text-muted-foreground",
               className
             )}
@@ -245,7 +245,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
                 setMonth(now);
               }}
               size="sm"
-              variant="outline"
+              variant="default"
             >
               Today
             </Button>

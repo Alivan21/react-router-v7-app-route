@@ -17,7 +17,7 @@ export default function DashboardPage() {
   return (
     <PageContainer breadcrumbs={breadcrumbs} showHomeIcon={false} title="Dashboard">
       <div className="flex flex-col gap-4">
-        <p>Hello, Welcome Back</p>
+        <h1>Hello, Welcome Back</h1>
         <DateTimePicker granularity="second" onChange={setDate} placeholder="Pilih Tanggal" />
         <Button onClick={() => console.log(date)}>Log Date</Button>
       </div>

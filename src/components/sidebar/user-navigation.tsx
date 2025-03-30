@@ -84,7 +84,7 @@ export function UserNavigation({ user }: UserNavigationProps) {
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Button
-                  className="w-full cursor-pointer justify-start font-normal"
+                  className="w-full cursor-pointer justify-start"
                   size="sm"
                   type="button"
                   variant="ghost"
@@ -97,7 +97,7 @@ export function UserNavigation({ user }: UserNavigationProps) {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Button
-                className="w-full cursor-pointer justify-start font-normal"
+                className="w-full cursor-pointer justify-start"
                 onClick={() => {
                   void handleLogout();
                 }}
