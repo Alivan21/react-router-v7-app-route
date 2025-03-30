@@ -89,7 +89,7 @@ export function UserNavigation({ user }: UserNavigationProps) {
                   type="button"
                   variant="ghost"
                 >
-                  <BadgeCheck />
+                  <BadgeCheck className="text-black" />
                   Account
                 </Button>
               </DropdownMenuItem>
@@ -105,7 +105,7 @@ export function UserNavigation({ user }: UserNavigationProps) {
                 type="button"
                 variant="ghost"
               >
-                <LogOut />
+                <LogOut className="text-black" />
                 Log out
               </Button>
             </DropdownMenuItem>

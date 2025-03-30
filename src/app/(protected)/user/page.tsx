@@ -54,13 +54,13 @@ export default function UserPage() {
       header: "Actions",
       cell: () => (
         <div className="flex gap-1">
-          <Button size="icon">
+          <Button size="sm">
             <Eye />
           </Button>
-          <Button size="icon">
+          <Button size="sm" variant="info">
             <Edit2 />
           </Button>
-          <Button size="icon">
+          <Button size="sm" variant="destructive">
             <Trash2 />
           </Button>
         </div>
