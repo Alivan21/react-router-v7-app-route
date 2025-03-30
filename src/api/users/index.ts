@@ -119,7 +119,6 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function getUsers(params: TUserQueryParams): Promise<TUserListResponse> {
   await delay(500);
 
-  // Add default values for optional parameters
   const page = params.page ?? 1;
   const limit = params.limit ?? 10;
 

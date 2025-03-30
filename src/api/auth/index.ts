@@ -16,9 +16,9 @@ const MOCK_USERS = [
 
 /**
  * Generate a mock JWT token
+ * This is a simplified mock token - don't use this pattern in production
  */
 const generateMockToken = (email: string): string => {
-  // This is a simplified mock token - don't use this pattern in production
   const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
   const payload = btoa(
     JSON.stringify({
@@ -38,16 +38,13 @@ const generateMockToken = (email: string): string => {
  * Mock login function that validates credentials and returns a JWT token
  */
 export const login = async (credentials: TLoginRequest): Promise<TLoginResponse> => {
-  // Validate request schema
   const validationResult = loginSchema.safeParse(credentials);
   if (!validationResult.success) {
     throw new Error("Invalid login credentials");
   }
 
-  // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  // Check if user exists (mock authentication)
   const user = MOCK_USERS.find(
     (u) => u.email === credentials.email && u.password === credentials.password
   );
@@ -56,11 +53,9 @@ export const login = async (credentials: TLoginRequest): Promise<TLoginResponse>
     throw new Error("Invalid email or password");
   }
 
-  // Generate token expiry (7 days from now)
   const expiryDate = new Date();
   expiryDate.setDate(expiryDate.getDate() + 7);
 
-  // Create response matching TLoginResponse type
   const response: TLoginResponse = {
     data: {
       token: generateMockToken(credentials.email),
@@ -78,9 +73,6 @@ export const login = async (credentials: TLoginRequest): Promise<TLoginResponse>
  * Mock logout function
  */
 export const logout = async (): Promise<void> => {
-  // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 500));
-  // In a real implementation, you would invalidate the token on the server
-  // This is a no-op in the mock implementation
   return Promise.resolve();
 };
