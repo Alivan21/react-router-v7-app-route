@@ -21,7 +21,7 @@ createRoot(document.getElementById("root")!).render(
     <SessionProvider>
       <TanstackProvider>
         <RouterProvider router={router} />
-        <Toaster position="top-right" />
+        <Toaster position="top-center" />
       </TanstackProvider>
     </SessionProvider>
   </StrictMode>

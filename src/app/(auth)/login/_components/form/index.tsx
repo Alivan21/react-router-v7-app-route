@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { InputPassword } from "@/components/ui/input-password";
 
 type LoginFormProps = {
   form: UseFormReturn<TLoginRequest>;
@@ -47,7 +46,7 @@ export default function LoginForm({ form, onSubmit, isSubmitting }: LoginFormPro
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <InputPassword className="w-full" placeholder="Password" {...field} />
+                <Input className="w-full" placeholder="Password" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
