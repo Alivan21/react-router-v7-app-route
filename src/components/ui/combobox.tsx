@@ -3,7 +3,9 @@ import { Check, ChevronsUpDown, X } from "lucide-react";
 import * as React from "react";
 import { forwardRef, useEffect } from "react";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
+import { useDebounce } from "@/hooks/shared/use-debounce";
 import { cn } from "@/libs/clsx";
+import { ScrollArea } from "./scroll-area";
 
 export interface Option {
   value: string;
@@ -69,20 +71,6 @@ export interface ComboboxRef {
   input: HTMLInputElement;
   focus: () => void;
   reset: () => void;
-}
-
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
 }
 
 function transToGroupOption(options: Option[], groupBy?: string) {
@@ -157,6 +145,7 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
     ref: React.Ref<ComboboxRef>
   ) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const buttonRef = React.useRef<HTMLButtonElement>(null);
     const [open, setOpen] = React.useState(false);
     const [onScrollbar, setOnScrollbar] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -184,11 +173,11 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node) &&
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
       ) {
         setOpen(false);
-        inputRef.current.blur();
+        inputRef.current?.blur();
       }
     };
 
@@ -374,7 +363,9 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
       >
         <button
           className={cn(
-            "border-input bg-background ring-offset-background focus-within:ring-ring flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-offset-2",
+            "border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
+            "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
             disabled && "cursor-not-allowed opacity-50",
             className
           )}
@@ -386,6 +377,7 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
               inputRef?.current?.focus();
             }, 0);
           }}
+          ref={buttonRef}
         >
           <div className="flex flex-1 items-center gap-1">
             {selected ? (
@@ -424,7 +416,7 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
             )}
           </div>
           <div className="flex items-center gap-1">
-            {selected && (
+            {selected ? (
               <button
                 className={cn("h-4 w-4 p-0", disabled && "hidden")}
                 onClick={(e) => {
@@ -435,8 +427,9 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
               >
                 <X className="h-4 w-4" />
               </button>
+            ) : (
+              <ChevronsUpDown className="h-4 w-4 opacity-50" />
             )}
-            <ChevronsUpDown className="h-4 w-4 opacity-50" />
           </div>
         </button>
         <div className="relative">
@@ -458,14 +451,14 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
                   {CreatableItem()}
                   {!selectFirstItem && <CommandItem className="hidden" value="-" />}
                   {Object.entries(options).map(([key, dropdowns]) => (
-                    <CommandGroup className="h-full overflow-auto" heading={key} key={key}>
-                      <>
+                    <CommandGroup className="h-full" heading={key} key={key}>
+                      <ScrollArea className="h-52">
                         {dropdowns.map((option) => {
                           const isSelected = selected?.value === option.value;
                           return (
                             <CommandItem
                               className={cn(
-                                "flex cursor-pointer items-center justify-between",
+                                "my-0.5 flex cursor-pointer items-center justify-between",
                                 option.disable && "text-muted-foreground cursor-default",
                                 isSelected && "bg-accent"
                               )}
@@ -488,7 +481,7 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
                             </CommandItem>
                           );
                         })}
-                      </>
+                      </ScrollArea>
                     </CommandGroup>
                   ))}
                 </>

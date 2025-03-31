@@ -6,6 +6,7 @@ import { DateTimePicker } from "@/components/datetime-picker";
 import PageContainer from "@/components/providers/page-container";
 import { Button } from "@/components/ui/button";
 import Combobox from "@/components/ui/combobox";
+import { Input } from "@/components/ui/input";
 
 export default function DashboardPage() {
   const breadcrumbs: BreadcrumbsItem[] = [
@@ -40,6 +41,10 @@ export default function DashboardPage() {
     <PageContainer breadcrumbs={breadcrumbs} showHomeIcon={false} title="Dashboard">
       <section className="flex flex-col gap-4">
         <h1 className="text-lg font-medium">Hello, Welcome Back</h1>
+        <div className="flex flex-col gap-2">
+          <h2>Input</h2>
+          <Input placeholder="Type something..." />
+        </div>
         <div className="flex flex-col gap-2">
           <h2>DateTime Picker</h2>
           <DateTimePicker granularity="day" onChange={setDate} placeholder="Pilih Tanggal" />
