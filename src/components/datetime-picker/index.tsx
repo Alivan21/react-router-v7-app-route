@@ -308,7 +308,14 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
                   />
                 </div>
               )}
-              <div className="flex justify-between px-6 py-2">
+              <div
+                className={cn(
+                  "flex justify-between px-6",
+                  granularity !== "day" && granularity !== "month" && granularity !== "year"
+                    ? "py-2"
+                    : "pb-2"
+                )}
+              >
                 <Button
                   className="px-2 text-sm font-normal"
                   onClick={handleClear}

@@ -44,7 +44,7 @@ export function DashboardSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <ScrollArea className="h-[calc(100vh-8rem)] px-2">
+      <ScrollArea className="h-[calc(100vh-8rem)]">
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
