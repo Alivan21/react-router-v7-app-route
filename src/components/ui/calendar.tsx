@@ -135,7 +135,7 @@ function Calendar({
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <div className="bg-background flex items-center gap-1.5 rounded-lg px-3 transition-colors">
+              <div className="bg-background flex items-center gap-1 rounded-lg px-3 transition-colors">
                 <Select
                   defaultValue={calendarMonth.date.getMonth().toString()}
                   onValueChange={(value) => {
@@ -146,7 +146,7 @@ function Calendar({
                 >
                   <SelectTrigger
                     aria-label="Select month"
-                    className="hover:bg-accent/50 text-foreground h-auto min-w-24 border-0 border-none p-0 py-0.5 ps-1 shadow-none outline-none focus:ring-0 focus:ring-offset-0"
+                    className="hover:bg-accent/50 text-foreground h-auto min-w-24 rounded-sm border-0 border-none p-0 py-0.5 ps-1 shadow-none outline-none focus:ring-0 focus:ring-offset-0"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -172,7 +172,7 @@ function Calendar({
                 >
                   <SelectTrigger
                     aria-label="Select year"
-                    className="hover:bg-accent/50 text-foreground h-auto w-fit border-0 border-none p-0 py-0.5 ps-1 shadow-none outline-none focus:ring-0 focus:ring-offset-0"
+                    className="hover:bg-accent/50 text-foreground h-auto w-fit rounded-sm border-0 border-none p-0 py-0.5 ps-1 shadow-none outline-none focus:ring-0 focus:ring-offset-0"
                   >
                     <SelectValue />
                   </SelectTrigger>

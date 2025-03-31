@@ -346,7 +346,7 @@ export const TimePickerInput = React.forwardRef<HTMLInputElement, TimePickerInpu
     return (
       <Input
         className={cn(
-          "focus:bg-accent focus:text-accent-foreground w-[48px] text-center font-mono text-base tabular-nums caret-transparent [&::-webkit-inner-spin-button]:appearance-none",
+          "focus:bg-accent focus:text-accent-foreground h-8 w-12 text-center font-mono text-base tabular-nums caret-transparent [&::-webkit-inner-spin-button]:appearance-none",
           className
         )}
         id={id || picker}
@@ -371,7 +371,7 @@ export const TimePickerInput = React.forwardRef<HTMLInputElement, TimePickerInpu
 
 TimePickerInput.displayName = "TimePickerInput";
 
-type Granularity = "day" | "hour" | "minute" | "second";
+type Granularity = "year" | "month" | "day" | "hour" | "minute" | "second";
 
 interface TimePickerProps {
   date?: Date | null;

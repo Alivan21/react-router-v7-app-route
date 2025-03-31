@@ -2,9 +2,9 @@ import { add, format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
-import { useRef } from "react";
+import { useRef, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { CalendarProps, Calendar } from "@/components/ui/calendar";
+import { type CalendarProps, Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   TimePicker,
@@ -13,6 +13,7 @@ import {
   type Granularity,
 } from "@/components/ui/time-picker";
 import { cn } from "@/libs/clsx";
+import { MonthYearGrid } from "./month-year-grid";
 
 type DateTimePickerProps = {
   value?: Date;
@@ -69,44 +70,90 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
     },
     ref
   ) => {
-    const [month, setMonth] = React.useState<Date>(value ?? defaultPopupValue);
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [month, setMonth] = React.useState<Date>(() => value ?? defaultPopupValue);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [displayDate, setDisplayDate] = React.useState<Date | undefined>(value ?? undefined);
     onMonthChange ||= onChange;
+
+    const initHourFormat = useMemo(
+      () => ({
+        hour24:
+          displayFormat?.hour24 ??
+          (granularity === "year"
+            ? "yyyy"
+            : granularity === "month"
+              ? "MMMM yyyy"
+              : granularity === "day"
+                ? "PPP"
+                : `PPP HH:mm${!granularity || granularity === "second" ? ":ss" : ""}`),
+        hour12:
+          displayFormat?.hour12 ??
+          (granularity === "year"
+            ? "yyyy"
+            : granularity === "month"
+              ? "MMMM yyyy"
+              : granularity === "day"
+                ? "PP"
+                : `PP hh:mm${!granularity || granularity === "second" ? ":ss" : ""} b`),
+      }),
+      [displayFormat, granularity]
+    );
+
+    const loc = useMemo(() => {
+      if (locale.options && locale.localize && locale.formatLong) {
+        return {
+          ...enUS,
+          options: locale.options,
+          localize: locale.localize,
+          formatLong: locale.formatLong,
+        };
+      }
+      return enUS;
+    }, [locale]);
+
     /**
      * carry over the current time when a user clicks a new day
      * instead of resetting to 00:00
      */
-    const handleMonthChange = (newDay: Date | undefined) => {
-      if (!newDay) {
-        return;
-      }
-      if (!defaultPopupValue) {
-        newDay.setHours(month?.getHours() ?? 0, month?.getMinutes() ?? 0, month?.getSeconds() ?? 0);
-        onMonthChange?.(newDay);
-        setMonth(newDay);
-        return;
-      }
-      const diff = newDay.getTime() - defaultPopupValue.getTime();
-      const diffInDays = diff / (1000 * 60 * 60 * 24);
-      const newDateFull = add(defaultPopupValue, { days: Math.ceil(diffInDays) });
-      newDateFull.setHours(
-        month?.getHours() ?? 0,
-        month?.getMinutes() ?? 0,
-        month?.getSeconds() ?? 0
-      );
-      onMonthChange?.(newDateFull);
-      setMonth(newDateFull);
-    };
+    const handleMonthChange = useCallback(
+      (newDay: Date | undefined) => {
+        if (!newDay) return;
 
-    const onSelect = (newDay?: Date) => {
-      if (!newDay) {
-        return;
-      }
-      onChange?.(newDay);
-      setMonth(newDay);
-      setDisplayDate(newDay);
-    };
+        if (!defaultPopupValue) {
+          newDay.setHours(
+            month?.getHours() ?? 0,
+            month?.getMinutes() ?? 0,
+            month?.getSeconds() ?? 0
+          );
+          onMonthChange?.(newDay);
+          setMonth(newDay);
+          return;
+        }
+
+        const diff = newDay.getTime() - defaultPopupValue.getTime();
+        const diffInDays = diff / (1000 * 60 * 60 * 24);
+        const newDateFull = add(defaultPopupValue, { days: Math.ceil(diffInDays) });
+        newDateFull.setHours(
+          month?.getHours() ?? 0,
+          month?.getMinutes() ?? 0,
+          month?.getSeconds() ?? 0
+        );
+        onMonthChange?.(newDateFull);
+        setMonth(newDateFull);
+      },
+      [month, onMonthChange, defaultPopupValue]
+    );
+
+    const onSelect = useCallback(
+      (newDay?: Date) => {
+        if (!newDay) return;
+        onChange?.(newDay);
+        setMonth(newDay);
+        setDisplayDate(newDay);
+      },
+      [onChange]
+    );
 
     React.useImperativeHandle(
       ref,
@@ -117,31 +164,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
       [displayDate]
     );
 
-    const initHourFormat = {
-      hour24:
-        displayFormat?.hour24 ??
-        (granularity === "day"
-          ? "PPP"
-          : `PPP HH:mm${!granularity || granularity === "second" ? ":ss" : ""}`),
-      hour12:
-        displayFormat?.hour12 ??
-        (granularity === "day"
-          ? "PP"
-          : `PP hh:mm${!granularity || granularity === "second" ? ":ss" : ""} b`),
-    };
-
-    let loc = enUS;
-    const { options, localize, formatLong } = locale;
-    if (options && localize && formatLong) {
-      loc = {
-        ...enUS,
-        options,
-        localize,
-        formatLong,
-      };
-    }
-
-    const handleTimeChange = React.useCallback(
+    const handleTimeChange = useCallback(
       (
         value:
           | Date
@@ -159,15 +182,61 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
           dateValue = value;
         }
 
-        onChange?.(dateValue);
-        setDisplayDate(dateValue);
-        setMonth(dateValue);
+        requestAnimationFrame(() => {
+          onChange?.(dateValue);
+          setDisplayDate(dateValue);
+          setMonth(dateValue);
+        });
       },
       [onChange, month]
     );
 
+    const getIntlLocale = useCallback(() => {
+      if (typeof locale === "object" && locale !== null && "code" in locale) {
+        return (locale as { code: string }).code;
+      }
+
+      // For enUS and other date-fns locale objects, try to get locale name from the object structure
+      if (
+        typeof locale === "object" &&
+        locale !== null &&
+        "formatLong" in locale &&
+        "options" in locale
+      ) {
+        // Some date-fns locales have language code as part of their internal name
+        const localeName = Object.prototype.toString.call(locale);
+        // Extract potential locale code from "[object XXLocale]" format
+        const match = /\[object ([a-zA-Z]{2,})Locale\]/.exec(localeName);
+        if (match && match[1]) {
+          return match[1].toLowerCase();
+        }
+      }
+
+      return "en-US";
+    }, [locale]);
+
+    const formattedDate = useMemo(() => {
+      if (!displayDate) return null;
+      return format(displayDate, hourCycle === 24 ? initHourFormat.hour24 : initHourFormat.hour12, {
+        locale: loc,
+      });
+    }, [displayDate, hourCycle, initHourFormat, loc]);
+
+    const handleClear = useCallback(() => {
+      onChange?.(undefined);
+      setDisplayDate(undefined);
+      setMonth(new Date());
+    }, [onChange]);
+
+    const handleToday = useCallback(() => {
+      const now = new Date();
+      onChange?.(now);
+      setDisplayDate(now);
+      setMonth(now);
+    }, [onChange]);
+
     return (
-      <Popover>
+      <Popover onOpenChange={setIsOpen} open={isOpen}>
         <PopoverTrigger asChild disabled={disabled}>
           <Button
             className={cn(
@@ -179,77 +248,86 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
             variant="outline"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {displayDate ? (
-              format(
-                displayDate,
-                hourCycle === 24 ? initHourFormat.hour24 : initHourFormat.hour12,
-                {
-                  locale: loc,
-                }
-              )
-            ) : (
-              <span>{placeholder}</span>
-            )}
+            {formattedDate ? formattedDate : <span>{placeholder}</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-auto p-0">
-          <Calendar
-            futureYears={2}
-            locale={locale}
-            mode="single"
-            month={month}
-            onMonthChange={handleMonthChange}
-            onSelect={(newDate) => {
-              if (newDate) {
-                newDate.setHours(
-                  month?.getHours() ?? 0,
-                  month?.getMinutes() ?? 0,
-                  month?.getSeconds() ?? 0
-                );
-                onSelect(newDate);
-              }
-            }}
-            pastYears={yearRange}
-            selected={displayDate}
-            {...props}
-          />
-          {granularity !== "day" && (
-            <div className="border-border border-t pt-2">
-              <TimePicker
-                date={month}
-                granularity={granularity}
-                hourCycle={hourCycle}
-                onChange={handleTimeChange}
-              />
-            </div>
+          {isOpen && (
+            <>
+              {granularity !== "year" && granularity !== "month" && (
+                <Calendar
+                  futureYears={2}
+                  locale={locale}
+                  mode="single"
+                  month={month}
+                  onMonthChange={handleMonthChange}
+                  onSelect={(newDate) => {
+                    if (newDate) {
+                      newDate.setHours(
+                        month?.getHours() ?? 0,
+                        month?.getMinutes() ?? 0,
+                        month?.getSeconds() ?? 0
+                      );
+                      onSelect(newDate);
+                    }
+                  }}
+                  pastYears={yearRange}
+                  selected={displayDate}
+                  {...props}
+                />
+              )}
+              {granularity === "month" && (
+                <MonthYearGrid
+                  locale={getIntlLocale()}
+                  onChange={(newDate) => {
+                    handleMonthChange(newDate);
+                    onSelect(newDate);
+                  }}
+                  type="month"
+                  value={displayDate}
+                />
+              )}
+              {granularity === "year" && (
+                <MonthYearGrid
+                  locale={getIntlLocale()}
+                  onChange={(newDate) => {
+                    handleMonthChange(newDate);
+                    onSelect(newDate);
+                  }}
+                  type="year"
+                  value={displayDate}
+                />
+              )}
+              {granularity !== "year" && granularity !== "month" && granularity !== "day" && (
+                <div className="border-border border-t pt-2">
+                  <TimePicker
+                    date={month}
+                    granularity={granularity}
+                    hourCycle={hourCycle}
+                    onChange={handleTimeChange}
+                  />
+                </div>
+              )}
+              <div className="flex justify-between px-6 py-2">
+                <Button
+                  className="px-2 text-sm font-normal"
+                  onClick={handleClear}
+                  size="sm"
+                  variant="outline"
+                >
+                  Clear
+                </Button>
+                <Button
+                  className="px-2 text-sm font-normal"
+                  onClick={handleToday}
+                  size="sm"
+                  variant="default"
+                >
+                  Today
+                </Button>
+              </div>
+            </>
           )}
-          <div className="flex justify-between px-6 py-2">
-            <Button
-              className="px-2 text-sm font-normal"
-              onClick={() => {
-                onChange?.(undefined);
-                setDisplayDate(undefined);
-                setMonth(new Date());
-              }}
-              size="sm"
-              variant="outline"
-            >
-              Clear
-            </Button>
-            <Button
-              className="px-2 text-sm font-normal"
-              onClick={() => {
-                const now = new Date();
-                onChange?.(now);
-                setDisplayDate(now);
-                setMonth(now);
-              }}
-              size="sm"
-              variant="default"
-            >
-              Today
-            </Button>
-          </div>
         </PopoverContent>
       </Popover>
     );
@@ -258,5 +336,8 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
 
 DateTimePicker.displayName = "DateTimePicker";
 
-export { DateTimePicker, TimePickerInput, TimePicker };
+const MemoizedDateTimePicker = React.memo(DateTimePicker);
+MemoizedDateTimePicker.displayName = "DateTimePicker";
+
+export { MemoizedDateTimePicker as DateTimePicker, TimePickerInput, TimePicker };
 export type { DateTimePickerProps, DateTimePickerRef, TimePickerType, Granularity };
