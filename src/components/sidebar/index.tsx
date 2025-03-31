@@ -74,7 +74,7 @@ export function DashboardSidebar() {
                             >
                               <item.icon className="size-4" />
                               <span>{item.title}</span>
-                              <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                              <ChevronRight className="ml-auto size-4 transition-transform duration-100 group-data-[state=open]/collapsible:rotate-90" />
                             </SidebarMenuButton>
                           </CollapsibleTrigger>
                           <CollapsibleContent>

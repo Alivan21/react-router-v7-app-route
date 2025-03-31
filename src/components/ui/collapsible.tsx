@@ -18,8 +18,8 @@ function CollapsibleContent({
   return (
     <CollapsiblePrimitive.CollapsibleContent
       className={cn(
-        "motion-safe:animate-in overflow-hidden transition-all duration-200",
-        "data-[state=closed]:fade-out data-[state=closed]:slide-out-to-top-1 data-[state=closed]:animate-out data-[state=closed]:duration-200",
+        "motion-safe:animate-in overflow-hidden transition-all duration-100",
+        "data-[state=closed]:fade-out data-[state=closed]:slide-out-to-top-1 data-[state=closed]:animate-out data-[state=closed]:duration-100",
         "data-[state=open]:fade-in data-[state=open]:slide-in-from-top-0.5",
         className
       )}
