@@ -72,13 +72,6 @@ export function buildSegmentPath(
 }
 
 /**
- * Checks if a route segment is an edit/update route.
- */
-export function isEditRoute(segment: string): boolean {
-  return segment === "update" || segment === "edit";
-}
-
-/**
  * Checks if a route is a dynamic parameter route.
  */
 export function isDynamicRoute(path: string): boolean {

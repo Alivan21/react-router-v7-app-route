@@ -6,6 +6,30 @@ import { mergeRoutes } from "../utils/route";
 import { createRoute } from "./route";
 
 /**
+ * Determines the appropriate loading component for a route.
+ */
+function findMatchingLoadingComponent(
+  filePath: string,
+  loadingFiles: Record<string, () => Promise<unknown>>
+) {
+  // Define loading paths in order of precedence
+  const loadingPaths = [
+    filePath.replace(/(page|layout)\.tsx$/, "loading.tsx"), // Local
+    filePath.match(/\([^/]+\//) ? `/${filePath.match(/\([^/]+\//)?.[0]}loading.tsx` : null, // Group
+    "./app/loading.tsx", // Global
+  ].filter(Boolean);
+
+  // Find the first matching loading file
+  for (const path of loadingPaths) {
+    if (path && loadingFiles[path]) {
+      return lazy(loadingFiles[path] as LoadingModule);
+    }
+  }
+
+  return undefined;
+}
+
+/**
  * Converts file-system based pages into React Router compatible routes.
  *
  * @param files - Object mapping file paths to their dynamic import functions
@@ -36,28 +60,4 @@ export function convertPagesToRoute(
   });
 
   return routes;
-}
-
-/**
- * Determines the appropriate loading component for a route.
- */
-export function findMatchingLoadingComponent(
-  filePath: string,
-  loadingFiles: Record<string, () => Promise<unknown>>
-) {
-  // Define loading paths in order of precedence
-  const loadingPaths = [
-    filePath.replace(/(page|layout)\.tsx$/, "loading.tsx"), // Local
-    filePath.match(/\([^/]+\//) ? `/${filePath.match(/\([^/]+\//)?.[0]}loading.tsx` : null, // Group
-    "./app/loading.tsx", // Global
-  ].filter(Boolean);
-
-  // Find the first matching loading file
-  for (const path of loadingPaths) {
-    if (path && loadingFiles[path]) {
-      return lazy(loadingFiles[path] as LoadingModule);
-    }
-  }
-
-  return undefined;
 }

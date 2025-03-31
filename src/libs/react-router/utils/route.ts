@@ -242,7 +242,7 @@ export function add404ToRoute(route: RouteObject, notFoundElement: JSX.Element):
 /**
  * Sets 404 pages for routes without index routes.
  */
-export function set404NonPage(routes: RouteObject, notFoundElement: JSX.Element): void {
+function set404NonPage(routes: RouteObject, notFoundElement: JSX.Element): void {
   // Check if this is a candidate for adding a 404 index
   if (
     routes.path &&
