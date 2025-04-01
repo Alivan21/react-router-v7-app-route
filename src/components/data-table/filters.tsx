@@ -13,15 +13,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Table } from "@tanstack/react-table";
 
-export interface FilterableColumn {
-  id: string;
-  title: string;
-  type?: "dropdown" | "combobox" | "datepicker";
-  options?: { label: string; value: string }[];
-  datePickerProps?: {
-    granularity?: "day" | "month" | "year";
-  };
-}
+export type FilterableColumn =
+  | {
+      id: string;
+      title: string;
+      type: "dropdown" | "combobox";
+      options: { label: string; value: string }[];
+      datePickerProps?: never;
+    }
+  | {
+      id: string;
+      title: string;
+      type: "datepicker";
+      options?: never;
+      datePickerProps?: {
+        granularity?: "day" | "month" | "year";
+      };
+    };
 
 interface DataTableFiltersProps<TData> {
   table: Table<TData>;

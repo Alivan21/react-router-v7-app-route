@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "eslint . --fix && tsc -b && vite build",
     "lint": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
     "preview": "vite preview"
   },

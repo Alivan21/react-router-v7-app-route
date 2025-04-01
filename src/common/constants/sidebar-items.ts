@@ -9,7 +9,7 @@ export const SIDEBAR_ITEMS = [
   },
   {
     title: "Users",
-    href: ROUTES.USERS,
+    href: ROUTES.USERS.LIST,
     icon: Users2,
   },
   {

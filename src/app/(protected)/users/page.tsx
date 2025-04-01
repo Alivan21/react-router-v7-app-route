@@ -1,6 +1,8 @@
 import { Edit2, Eye, Trash2 } from "lucide-react";
 import { useMemo } from "react";
+import { Link } from "react-router";
 import { TUserItem } from "@/api/users/type";
+import { ROUTES } from "@/common/constants/routes";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
 import { DataTable, TableColumnDef } from "@/components/data-table";
 import { FilterableColumn } from "@/components/data-table/filters";
@@ -18,7 +20,6 @@ export default function UserPage() {
   ];
 
   const { queryParams } = useTableQueryParams();
-
   const { data, isLoading, isError } = useUsersQuery({
     ...queryParams,
     page: queryParams.page,
@@ -63,10 +64,12 @@ export default function UserPage() {
     },
     {
       header: "Actions",
-      cell: () => (
+      cell: (items) => (
         <div className="flex gap-1">
-          <Button size="sm">
-            <Eye />
+          <Button asChild size="sm">
+            <Link to={ROUTES.USERS.DETAIL.replace(":id", items.row.original.id)}>
+              <Eye />
+            </Link>
           </Button>
           <Button size="sm" variant="info">
             <Edit2 />
@@ -114,7 +117,7 @@ const TopAction = () => {
   return (
     <div className="flex gap-2">
       <Button variant="outline">Import</Button>
-      <Button variant="outline">Export</Button>
+      <Button variant="success">Export</Button>
       <Button>New User</Button>
     </div>
   );
