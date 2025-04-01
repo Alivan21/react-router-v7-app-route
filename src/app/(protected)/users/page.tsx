@@ -71,8 +71,10 @@ export default function UserPage() {
               <Eye />
             </Link>
           </Button>
-          <Button size="sm" variant="info">
-            <Edit2 />
+          <Button asChild size="sm" variant="info">
+            <Link to={ROUTES.USERS.EDIT.replace(":id", items.row.original.id)}>
+              <Edit2 />
+            </Link>
           </Button>
           <Button size="sm" variant="destructive">
             <Trash2 />
@@ -118,7 +120,11 @@ const TopAction = () => {
     <div className="flex gap-2">
       <Button variant="outline">Import</Button>
       <Button variant="success">Export</Button>
-      <Button>New User</Button>
+      <Button asChild>
+        <Link className="w-full" to={ROUTES.USERS.CREATE}>
+          New User
+        </Link>
+      </Button>
     </div>
   );
 };

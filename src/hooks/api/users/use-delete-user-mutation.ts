@@ -13,12 +13,10 @@ export const useDeleteUserMutation = (id: string) => {
   return useMutation({
     mutationFn: () => deleteUser(id),
     onSuccess: async () => {
-      // Invalidate and refetch the user list
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.USER.LIST],
       });
 
-      // Invalidate and refetch the user detail
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.USER.DETAIL, id],
       });
