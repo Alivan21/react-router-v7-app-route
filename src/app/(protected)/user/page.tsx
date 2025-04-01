@@ -49,6 +49,17 @@ export default function UserPage() {
     {
       accessorKey: "status",
       header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status");
+        return (
+          <div className="flex items-center gap-2 uppercase">
+            <span
+              className={`h-2 w-2 rounded-full ${status === "active" ? "bg-green-500" : "bg-red-500"}`}
+            />
+            {status as string}
+          </div>
+        );
+      },
     },
     {
       header: "Actions",
@@ -73,6 +84,7 @@ export default function UserPage() {
       {
         id: "status",
         title: "Status",
+        type: "combobox",
         options: [
           { label: "Active", value: "active" },
           { label: "Inactive", value: "inactive" },

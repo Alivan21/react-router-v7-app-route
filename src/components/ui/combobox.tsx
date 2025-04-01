@@ -417,16 +417,28 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
           </div>
           <div className="flex items-center gap-1">
             {selected ? (
-              <button
-                className={cn("h-4 w-4 p-0", disabled && "hidden")}
+              <span
+                aria-label="Clear selection"
+                className={cn(
+                  "inline-flex h-4 w-4 cursor-pointer items-center justify-center p-0",
+                  disabled && "hidden"
+                )}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleClear();
                 }}
-                type="button"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleClear();
+                  }
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <X className="h-4 w-4" />
-              </button>
+              </span>
             ) : (
               <ChevronsUpDown className="h-4 w-4 opacity-50" />
             )}

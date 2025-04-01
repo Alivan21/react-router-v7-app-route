@@ -44,17 +44,16 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
+      ...reactPlugin.configs["jsx-runtime"].rules,
       ...jsxA11yPlugin.configs.recommended.rules,
       ...tsPlugin.configs["recommended"].rules,
       ...tsPlugin.configs["recommended-requiring-type-checking"].rules,
       ...importPlugin.configs.typescript.rules,
-      "react/jsx-no-useless-fragment": "warn",
       "react/jsx-curly-brace-presence": "warn",
       "react/display-name": "warn",
       "react/self-closing-comp": "warn",
       "react/jsx-sort-props": "warn",
       "react-refresh/only-export-components": "off",
-      "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "import/order": [

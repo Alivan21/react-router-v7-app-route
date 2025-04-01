@@ -10,6 +10,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { format } from "date-fns"; // Add this import
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router";
@@ -96,6 +97,26 @@ export function DataTable<TData, TValue>({
     }
   }, [debouncedSearchValue, updateUrl]);
 
+  // Add this effect to initialize filters from URL parameters
+  useEffect(() => {
+    // Initialize column filters from URL parameters
+    const initialFilters: ColumnFiltersState = [];
+
+    filterableColumns.forEach((column) => {
+      const paramValue = searchParams.get(column.id);
+      if (paramValue) {
+        initialFilters.push({
+          id: column.id,
+          value: paramValue,
+        });
+      }
+    });
+
+    if (initialFilters.length > 0) {
+      setColumnFilters(initialFilters);
+    }
+  }, [searchParams, filterableColumns]);
+
   const table = useReactTable({
     data,
     columns,
@@ -130,11 +151,51 @@ export function DataTable<TData, TValue>({
 
       const updatedParams: Record<string, string | number | null> = {};
 
+      filterableColumns.forEach((column) => {
+        const currentValue = searchParams.get(column.id);
+        if (currentValue) {
+          updatedParams[column.id] = currentValue;
+        }
+      });
+
       const filtersArray =
         typeof newFilters === "function" ? newFilters(columnFilters) : newFilters;
 
       filtersArray.forEach((filter) => {
-        updatedParams[filter.id] = filter.value as string;
+        if (filter.value === null || filter.value === undefined) {
+          updatedParams[filter.id] = null;
+        } else if (filter.value instanceof Date) {
+          const column = filterableColumns.find((col) => col.id === filter.id);
+          if (column?.type === "datepicker") {
+            const granularity = column.datePickerProps?.granularity || "day";
+            switch (granularity) {
+              case "year":
+                updatedParams[filter.id] = format(filter.value, "yyyy");
+                break;
+              case "month":
+                updatedParams[filter.id] = format(filter.value, "yyyy-MM");
+                break;
+              case "day":
+              default:
+                updatedParams[filter.id] = format(filter.value, "yyyy-MM-dd");
+                break;
+            }
+          } else {
+            updatedParams[filter.id] = format(filter.value, "yyyy-MM-dd");
+          }
+        } else if (typeof filter.value === "object") {
+          updatedParams[filter.id] = JSON.stringify(filter.value);
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
+          updatedParams[filter.id] = String(filter.value);
+        }
+      });
+
+      const oldFiltersArray = columnFilters;
+      oldFiltersArray.forEach((filter) => {
+        if (!filtersArray.find((f) => f.id === filter.id)) {
+          updatedParams[filter.id] = null;
+        }
       });
 
       updateUrl(updatedParams);
@@ -168,21 +229,27 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row">
-        <div className="max-w-sm flex-1">
-          <Input
-            className="max-w-sm"
-            onChange={handleSearchChange}
-            placeholder={`Search by ${searchColumn}...`}
-            value={searchValue}
-          />
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row">
+          <div className="w-full sm:max-w-sm">
+            <Input
+              className="w-full"
+              onChange={handleSearchChange}
+              placeholder={`Search by ${searchColumn}...`}
+              value={searchValue}
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <DataTableViewOptions table={table} />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 sm:flex-row">
-          {filterableColumns.length > 0 && (
+
+        {filterableColumns.length > 0 && (
+          <div className="w-full">
             <DataTableFilters filterableColumns={filterableColumns} table={table} />
-          )}
-          <DataTableViewOptions table={table} />
-        </div>
+          </div>
+        )}
       </div>
       <ScrollArea
         className={cn(
