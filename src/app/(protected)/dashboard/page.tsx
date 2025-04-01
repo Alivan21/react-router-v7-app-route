@@ -1,6 +1,7 @@
 import { Home } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { ROUTES } from "@/common/constants/routes";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
 import { DateTimePicker } from "@/components/datetime-picker";
 import PageContainer from "@/components/providers/page-container";
@@ -12,7 +13,7 @@ export default function DashboardPage() {
   const breadcrumbs: BreadcrumbsItem[] = [
     {
       text: <Home className="h-4 w-4" />,
-      url: "/dashboard",
+      url: ROUTES.DASHBOARD,
     },
   ];
 

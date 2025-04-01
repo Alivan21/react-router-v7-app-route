@@ -464,7 +464,7 @@ const Combobox = React.forwardRef<ComboboxRef, ComboboxProps>(
                   {!selectFirstItem && <CommandItem className="hidden" value="-" />}
                   {Object.entries(options).map(([key, dropdowns]) => (
                     <CommandGroup className="h-full" heading={key} key={key}>
-                      <ScrollArea className="h-52">
+                      <ScrollArea className={cn(dropdowns.length > 5 ? "h-52" : "h-auto")}>
                         {dropdowns.map((option) => {
                           const isSelected = selected?.value === option.value;
                           return (

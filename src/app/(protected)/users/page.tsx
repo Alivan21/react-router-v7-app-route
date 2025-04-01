@@ -15,7 +15,7 @@ export default function UserPage() {
   const breadcrumbs: BreadcrumbsItem[] = [
     {
       text: "Users",
-      url: "/users",
+      url: ROUTES.USERS.LIST,
     },
   ];
 
