@@ -1,8 +1,10 @@
 import { Edit2, Trash2 } from "lucide-react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useParams, Link, useNavigate } from "react-router";
 import Loading from "@/app/loading";
 import { ROUTES } from "@/common/constants/routes";
+import AlertConfirmDialog from "@/components/alert-dialog";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
 import { Descriptions } from "@/components/descriptions";
 import PageContainer from "@/components/providers/page-container";
@@ -14,7 +16,8 @@ import { useUserQuery } from "@/hooks/api/users/use-user-query";
 export default function DetailUserPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { mutateAsync: deleteUser, isPending } = useDeleteUserMutation(id as string);
+  const { mutate: deleteUser, isPending } = useDeleteUserMutation(id as string);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const breadcrumbs: BreadcrumbsItem[] = [
     {
@@ -33,17 +36,24 @@ export default function DetailUserPage() {
     return <Loading />;
   }
 
-  const handleDelete = async () => {
-    await toast.promise(
-      deleteUser().then(() => {
-        void navigate(ROUTES.USERS.LIST);
-      }),
-      {
-        loading: "Deleting user...",
-        success: "User deleted successfully",
-        error: "Failed to delete user",
-      }
-    );
+  const handleOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    try {
+      deleteUser(undefined, {
+        onSuccess: () => {
+          toast.success("User deleted successfully");
+          void navigate(ROUTES.USERS.LIST);
+        },
+        onError: (error) => {
+          toast.error(error?.response?.data?.message || "Failed to delete user. Please try again.");
+        },
+      });
+    } catch {
+      toast.error("An error occurred while deleting the user.");
+    }
   };
 
   const TopActions = () => (
@@ -54,7 +64,7 @@ export default function DetailUserPage() {
           Edit
         </Link>
       </Button>
-      <Button disabled={isPending} onClick={() => void handleDelete()} variant="destructive">
+      <Button disabled={isPending} onClick={handleOpenDeleteDialog} variant="destructive">
         <Trash2 className="size-4" />
         Delete
       </Button>
@@ -82,6 +92,17 @@ export default function DetailUserPage() {
           </Badge>
         </Descriptions.Item>
       </Descriptions>
+
+      <AlertConfirmDialog
+        cancelText="Cancel"
+        continueText="Delete"
+        description={`Are you sure you want to delete user ${data?.data.name}? This action cannot be undone.`}
+        isDestructive={true}
+        onContinue={handleConfirmDelete}
+        onOpenChange={setDeleteDialogOpen}
+        open={deleteDialogOpen}
+        title="Delete User"
+      />
     </PageContainer>
   );
 }

@@ -89,7 +89,7 @@ export default function UserForm<T extends TCreateUserRequest | TUpdateUserReque
             )}
           />
         </div>
-        <div className="flex w-full items-center justify-end gap-2 border-t pt-2">
+        <div className="flex w-full items-center justify-end gap-2 border-t pt-3">
           <Button
             className="w-auto"
             disabled={isSubmitting ?? form.formState.isSubmitting}

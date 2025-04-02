@@ -46,7 +46,7 @@ export default function PageContainer({
                     size="sm"
                     variant="default"
                   >
-                    <ChevronLeft className="size-5" />
+                    <ChevronLeft className="size-5" strokeWidth={2.5} />
                   </Button>
                 )}
                 <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
