@@ -53,7 +53,7 @@ export default function UserPage() {
 
   const columns: TableColumnDef<TUserItem>[] = [
     {
-      accessorKey: "id",
+      accessorKey: "no",
       header: "No",
       enableSorting: true,
       cell: ({ row }) => <span>{row.index + 1}</span>,
