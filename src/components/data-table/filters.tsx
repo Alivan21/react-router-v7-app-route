@@ -21,7 +21,7 @@ export type FilterableColumn =
       type: "dropdown" | "combobox";
       placeholder?: string;
       onSearch?: (value: string) => Promise<Option[]>;
-      options: { label: string; value: string }[];
+      options: Option[];
       datePickerProps?: never;
     }
   | {

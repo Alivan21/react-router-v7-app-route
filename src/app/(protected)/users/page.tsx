@@ -1,5 +1,5 @@
 import { Edit2, Eye, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 import { TUserItem } from "@/api/users/type";
@@ -121,35 +121,32 @@ export default function UserPage() {
     },
   ];
 
-  const filterComponents: FilterableColumn[] = useMemo(
-    () => [
-      {
-        id: "status",
-        title: "Status",
-        type: "combobox",
-        options: [
-          { label: "Active", value: "active" },
-          { label: "Inactive", value: "inactive" },
-        ],
+  const filterComponents: FilterableColumn[] = [
+    {
+      id: "status",
+      title: "Status",
+      type: "combobox",
+      options: [
+        { label: "Active", value: "active" },
+        { label: "Inactive", value: "inactive" },
+      ],
+    },
+    {
+      id: "created_at",
+      title: "Created At",
+      type: "datepicker",
+      placeholder: "Filter by Created At",
+    },
+    {
+      id: "updated_at",
+      title: "Updated At",
+      type: "datepicker",
+      datePickerProps: {
+        granularity: "month",
       },
-      {
-        id: "created_at",
-        title: "Created At",
-        type: "datepicker",
-        placeholder: "Filter by Created At",
-      },
-      {
-        id: "updated_at",
-        title: "Updated At",
-        type: "datepicker",
-        datePickerProps: {
-          granularity: "month",
-        },
-        placeholder: "Filter by Updated At",
-      },
-    ],
-    []
-  );
+      placeholder: "Filter by Updated At",
+    },
+  ];
 
   return (
     <PageContainer breadcrumbs={breadcrumbs} title="User Management" topActions={<TopAction />}>

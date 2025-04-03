@@ -470,7 +470,7 @@ function Combobox({
             onMouseLeave={() => setOnScrollbar(false)}
           >
             {isLoading ? (
-              <>{loadingIndicator}</>
+              <div className="p-2 text-center">{loadingIndicator}</div>
             ) : (
               <>
                 <EmptyItem />
