@@ -136,9 +136,6 @@ export default function UserPage() {
         id: "created_at",
         title: "Created At",
         type: "datepicker",
-        datePickerProps: {
-          granularity: "day",
-        },
         placeholder: "Filter by Created At",
       },
       {
@@ -146,7 +143,7 @@ export default function UserPage() {
         title: "Updated At",
         type: "datepicker",
         datePickerProps: {
-          granularity: "day",
+          granularity: "month",
         },
         placeholder: "Filter by Updated At",
       },

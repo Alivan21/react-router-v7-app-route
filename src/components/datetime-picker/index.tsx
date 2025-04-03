@@ -1,4 +1,4 @@
-import { add, format } from "date-fns";
+import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
@@ -74,7 +74,6 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
     const [month, setMonth] = React.useState<Date>(() => value ?? defaultPopupValue);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [displayDate, setDisplayDate] = React.useState<Date | undefined>(value ?? undefined);
-    onMonthChange ||= onChange;
 
     const initHourFormat = useMemo(
       () => ({
@@ -120,29 +119,13 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
       (newDay: Date | undefined) => {
         if (!newDay) return;
 
-        if (!defaultPopupValue) {
-          newDay.setHours(
-            month?.getHours() ?? 0,
-            month?.getMinutes() ?? 0,
-            month?.getSeconds() ?? 0
-          );
-          onMonthChange?.(newDay);
-          setMonth(newDay);
-          return;
-        }
+        setMonth(newDay);
 
-        const diff = newDay.getTime() - defaultPopupValue.getTime();
-        const diffInDays = diff / (1000 * 60 * 60 * 24);
-        const newDateFull = add(defaultPopupValue, { days: Math.ceil(diffInDays) });
-        newDateFull.setHours(
-          month?.getHours() ?? 0,
-          month?.getMinutes() ?? 0,
-          month?.getSeconds() ?? 0
-        );
-        onMonthChange?.(newDateFull);
-        setMonth(newDateFull);
+        if (onMonthChange) {
+          onMonthChange(newDay);
+        }
       },
-      [month, onMonthChange, defaultPopupValue]
+      [onMonthChange]
     );
 
     const onSelect = useCallback(

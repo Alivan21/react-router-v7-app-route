@@ -3,7 +3,7 @@ import { Filter, X } from "lucide-react";
 import { useSearchParams } from "react-router";
 import { DateTimePicker } from "@/components/datetime-picker";
 import { Button } from "@/components/ui/button";
-import Combobox from "@/components/ui/combobox";
+import Combobox, { Option } from "@/components/ui/combobox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -20,6 +20,7 @@ export type FilterableColumn =
       title: string;
       type: "dropdown" | "combobox";
       placeholder?: string;
+      onSearch?: (value: string) => Promise<Option[]>;
       options: { label: string; value: string }[];
       datePickerProps?: never;
     }
@@ -62,12 +63,21 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
       case "month":
         formattedDate = format(date, "yyyy-MM");
         break;
-      case "day":
       default:
         formattedDate = format(date, "yyyy-MM-dd");
         break;
     }
     newParams.set(columnId, formattedDate);
+    setSearchParams(newParams);
+  };
+
+  const handleComboboxChange = (columnId: string, value: Option | undefined) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value) {
+      newParams.set(columnId, value.value);
+    } else {
+      newParams.delete(columnId);
+    }
     setSearchParams(newParams);
   };
 
@@ -122,17 +132,10 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
           return (
             <div className="w-full min-w-28 sm:w-auto" key={column.id}>
               <Combobox
+                defaultOptions={column.options}
                 key={selectedOption?.value || "empty"}
-                onChange={(option) => {
-                  const newParams = new URLSearchParams(searchParams);
-                  if (option?.value) {
-                    newParams.set(column.id, option.value);
-                  } else {
-                    newParams.delete(column.id);
-                  }
-                  setSearchParams(newParams);
-                }}
-                options={column.options}
+                onChange={(value) => handleComboboxChange(column.id, value)}
+                onSearch={column.onSearch}
                 placeholder={column.placeholder || `Filter by ${column.title}`}
                 value={selectedOption}
               />
