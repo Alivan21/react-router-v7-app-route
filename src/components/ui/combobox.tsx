@@ -136,11 +136,11 @@ function Combobox({
   placeholder,
   defaultOptions: arrayDefaultOptions = [],
   options: arrayOptions,
-  delay = 500,
+  delay = 1000,
   onSearch,
   onSearchSync,
-  loadingIndicator,
-  emptyIndicator,
+  loadingIndicator = "Loading...",
+  emptyIndicator = "No options found.",
   disabled,
   groupBy,
   className,
@@ -378,7 +378,6 @@ function Combobox({
     [disabled]
   );
 
-  // Render optimized component
   return (
     <Command
       ref={dropdownRef}

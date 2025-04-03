@@ -19,6 +19,7 @@ export type FilterableColumn =
       id: string;
       title: string;
       type: "dropdown" | "combobox";
+      placeholder?: string;
       options: { label: string; value: string }[];
       datePickerProps?: never;
     }
@@ -27,6 +28,7 @@ export type FilterableColumn =
       title: string;
       type: "datepicker";
       options?: never;
+      placeholder?: string;
       datePickerProps?: {
         granularity?: "day" | "month" | "year";
       };
@@ -45,8 +47,8 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
     date: Date | undefined,
     granularity: "day" | "month" | "year" = "day"
   ) => {
+    const newParams = new URLSearchParams(searchParams);
     if (!date) {
-      const newParams = new URLSearchParams(searchParams);
       newParams.delete(columnId);
       setSearchParams(newParams);
       return;
@@ -65,8 +67,6 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
         formattedDate = format(date, "yyyy-MM-dd");
         break;
     }
-
-    const newParams = new URLSearchParams(searchParams);
     newParams.set(columnId, formattedDate);
     setSearchParams(newParams);
   };
@@ -80,12 +80,13 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
       {filterableColumns.map((column) => {
         if (column.type === "datepicker") {
           const currentValue = getFilterValue(column.id);
-          const dateValue = currentValue
-            ? (() => {
-                const date = new Date(currentValue);
-                return isNaN(date.getTime()) ? undefined : date;
-              })()
-            : undefined;
+          let dateValue = undefined;
+          if (currentValue) {
+            const date = new Date(currentValue);
+            if (!isNaN(date.getTime())) {
+              dateValue = date;
+            }
+          }
 
           return (
             <div className="relative w-full min-w-28 sm:w-auto" key={column.id}>
@@ -96,7 +97,7 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
                 onChange={(date) => {
                   handleDateChange(column.id, date, column.datePickerProps?.granularity || "day");
                 }}
-                placeholder={`Filter by ${column.title}`}
+                placeholder={column.placeholder || `Filter by ${column.title}`}
                 value={dateValue}
               />
               {dateValue && (
@@ -132,7 +133,7 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
                   setSearchParams(newParams);
                 }}
                 options={column.options}
-                placeholder={`Filter by ${column.title}`}
+                placeholder={column.placeholder || `Filter by ${column.title}`}
                 value={selectedOption}
               />
             </div>
