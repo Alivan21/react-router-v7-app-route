@@ -133,15 +133,6 @@ export default function UserPage() {
         ],
       },
       {
-        id: "testing",
-        title: "Testing Status",
-        type: "combobox",
-        options: [
-          { label: "Test", value: "test1" },
-          { label: "Test2", value: "test2" },
-        ],
-      },
-      {
         id: "created_at",
         title: "Created At",
         type: "datepicker",

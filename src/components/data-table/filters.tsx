@@ -80,17 +80,12 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
       {filterableColumns.map((column) => {
         if (column.type === "datepicker") {
           const currentValue = getFilterValue(column.id);
-          let dateValue: Date | undefined = undefined;
-          if (currentValue) {
-            try {
-              dateValue = new Date(currentValue);
-              if (isNaN(dateValue.getTime())) {
-                dateValue = undefined;
-              }
-            } catch {
-              dateValue = undefined;
-            }
-          }
+          const dateValue = currentValue
+            ? (() => {
+                const date = new Date(currentValue);
+                return isNaN(date.getTime()) ? undefined : date;
+              })()
+            : undefined;
 
           return (
             <div className="relative w-full min-w-28 sm:w-auto" key={column.id}>
@@ -120,12 +115,13 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
         }
 
         if (column.type === "combobox") {
-          const options =
-            column.options?.map((opt) => ({ value: opt.value, label: opt.label })) || [];
+          const currentValue = getFilterValue(column.id);
+          const selectedOption = column.options.find((option) => option.value === currentValue);
 
           return (
             <div className="w-full min-w-28 sm:w-auto" key={column.id}>
               <Combobox
+                key={selectedOption?.value || "empty"}
                 onChange={(option) => {
                   const newParams = new URLSearchParams(searchParams);
                   if (option?.value) {
@@ -135,8 +131,9 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
                   }
                   setSearchParams(newParams);
                 }}
-                options={options}
+                options={column.options}
                 placeholder={`Filter by ${column.title}`}
+                value={selectedOption}
               />
             </div>
           );
