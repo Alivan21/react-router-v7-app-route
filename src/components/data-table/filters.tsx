@@ -1,5 +1,6 @@
 import { format } from "date-fns";
-import { Filter } from "lucide-react";
+import { Filter, X } from "lucide-react";
+import { useSearchParams } from "react-router";
 import { DateTimePicker } from "@/components/datetime-picker";
 import { Button } from "@/components/ui/button";
 import Combobox from "@/components/ui/combobox";
@@ -36,19 +37,18 @@ interface DataTableFiltersProps<TData> {
   filterableColumns: FilterableColumn[];
 }
 
-export function DataTableFilters<TData>({
-  table,
-  filterableColumns,
-}: DataTableFiltersProps<TData>) {
+export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersProps<TData>) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const handleDateChange = (
     columnId: string,
     date: Date | undefined,
     granularity: "day" | "month" | "year" = "day"
   ) => {
-    const column = table.getColumn(columnId);
-
     if (!date) {
-      column?.setFilterValue(undefined);
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete(columnId);
+      setSearchParams(newParams);
       return;
     }
 
@@ -66,17 +66,20 @@ export function DataTableFilters<TData>({
         break;
     }
 
-    if (column) {
-      column.setFilterValue(formattedDate);
-    }
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set(columnId, formattedDate);
+    setSearchParams(newParams);
+  };
+
+  const getFilterValue = (columnId: string) => {
+    return searchParams.get(columnId) || undefined;
   };
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       {filterableColumns.map((column) => {
         if (column.type === "datepicker") {
-          const currentValue = table.getColumn(column.id)?.getFilterValue() as string;
-
+          const currentValue = getFilterValue(column.id);
           let dateValue: Date | undefined = undefined;
           if (currentValue) {
             try {
@@ -90,15 +93,28 @@ export function DataTableFilters<TData>({
           }
 
           return (
-            <div className="w-full min-w-28 sm:w-auto" key={column.id}>
+            <div className="relative w-full min-w-28 sm:w-auto" key={column.id}>
               <DateTimePicker
+                className="min-w-52"
                 granularity={column.datePickerProps?.granularity || "day"}
+                key={currentValue || "empty"}
                 onChange={(date) => {
                   handleDateChange(column.id, date, column.datePickerProps?.granularity || "day");
                 }}
                 placeholder={`Filter by ${column.title}`}
                 value={dateValue}
               />
+              {dateValue && (
+                <Button
+                  aria-label="Clear date filter"
+                  className="absolute top-1/2 right-1 h-6 w-6 -translate-y-1/2"
+                  onClick={() => handleDateChange(column.id, undefined)}
+                  size="icon"
+                  variant="ghost"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
             </div>
           );
         }
@@ -106,24 +122,27 @@ export function DataTableFilters<TData>({
         if (column.type === "combobox") {
           const options =
             column.options?.map((opt) => ({ value: opt.value, label: opt.label })) || [];
-          const selectedValue = table.getColumn(column.id)?.getFilterValue() as string;
-          const selectedOption = options.find((opt) => opt.value === selectedValue);
 
           return (
             <div className="w-full min-w-28 sm:w-auto" key={column.id}>
               <Combobox
                 onChange={(option) => {
-                  if (table.getColumn(column.id)) {
-                    table.getColumn(column.id)?.setFilterValue(option?.value);
+                  const newParams = new URLSearchParams(searchParams);
+                  if (option?.value) {
+                    newParams.set(column.id, option.value);
+                  } else {
+                    newParams.delete(column.id);
                   }
+                  setSearchParams(newParams);
                 }}
                 options={options}
                 placeholder={`Filter by ${column.title}`}
-                value={selectedOption}
               />
             </div>
           );
         }
+
+        const currentValue = getFilterValue(column.id);
 
         return (
           <DropdownMenu key={column.id}>
@@ -138,14 +157,16 @@ export function DataTableFilters<TData>({
               <DropdownMenuSeparator />
               {column.options?.map((option) => (
                 <DropdownMenuCheckboxItem
-                  checked={table.getColumn(column.id)?.getFilterValue() === option.value}
+                  checked={currentValue === option.value}
                   key={option.value}
                   onCheckedChange={() => {
-                    const columnFilter = table.getColumn(column.id);
-                    const currentValue = columnFilter?.getFilterValue();
-                    columnFilter?.setFilterValue(
-                      currentValue === option.value ? undefined : option.value
-                    );
+                    const newParams = new URLSearchParams(searchParams);
+                    if (currentValue === option.value) {
+                      newParams.delete(column.id);
+                    } else {
+                      newParams.set(column.id, option.value);
+                    }
+                    setSearchParams(newParams);
                   }}
                 >
                   {option.label}

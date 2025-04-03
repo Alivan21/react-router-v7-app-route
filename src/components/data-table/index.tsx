@@ -44,6 +44,7 @@ interface DataTableProps<TData, TValue> {
   pageCount: number;
   searchColumn?: string;
   filterableColumns?: FilterableColumn[];
+  initialColumnVisibility?: VisibilityState;
 }
 
 function getColumnWidth<TData, TValue = unknown>(columnDef: TableColumnDef<TData, TValue>): string {
@@ -59,12 +60,15 @@ export function DataTable<TData, TValue>({
   pageCount,
   searchColumn = "name",
   filterableColumns = [],
+  initialColumnVisibility,
 }: DataTableProps<TData, TValue>) {
   const { state } = useSidebar();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    initialColumnVisibility || {}
+  );
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
   const debouncedSearchValue = useDebounce<string>(searchValue, 500);
 
@@ -97,9 +101,7 @@ export function DataTable<TData, TValue>({
     }
   }, [debouncedSearchValue, updateUrl]);
 
-  // Add this effect to initialize filters from URL parameters
   useEffect(() => {
-    // Initialize column filters from URL parameters
     const initialFilters: ColumnFiltersState = [];
 
     filterableColumns.forEach((column) => {
@@ -149,17 +151,10 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: (newFilters) => {
       setColumnFilters(newFilters);
 
-      const updatedParams: Record<string, string | number | null> = {};
-
-      filterableColumns.forEach((column) => {
-        const currentValue = searchParams.get(column.id);
-        if (currentValue) {
-          updatedParams[column.id] = currentValue;
-        }
-      });
-
       const filtersArray =
         typeof newFilters === "function" ? newFilters(columnFilters) : newFilters;
+
+      const updatedParams: Record<string, string | number | null> = {};
 
       filtersArray.forEach((filter) => {
         if (filter.value === null || filter.value === undefined) {
@@ -183,11 +178,14 @@ export function DataTable<TData, TValue>({
           } else {
             updatedParams[filter.id] = format(filter.value, "yyyy-MM-dd");
           }
-        } else if (typeof filter.value === "object") {
-          updatedParams[filter.id] = JSON.stringify(filter.value);
-        } else {
-          // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        } else if (
+          typeof filter.value === "string" ||
+          typeof filter.value === "number" ||
+          typeof filter.value === "boolean"
+        ) {
           updatedParams[filter.id] = String(filter.value);
+        } else {
+          updatedParams[filter.id] = JSON.stringify(filter.value);
         }
       });
 

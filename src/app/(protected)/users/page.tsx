@@ -87,6 +87,15 @@ export default function UserPage() {
       },
     },
     {
+      accessorKey: "created_at",
+      header: "Created At",
+      enableSorting: true,
+      cell: ({ row }) => {
+        const createdAt = row.getValue("created_at");
+        return <span>{new Date(createdAt as string).toLocaleDateString()}</span>;
+      },
+    },
+    {
       header: "Actions",
       cell: (items) => (
         <div className="flex gap-1">
@@ -122,6 +131,33 @@ export default function UserPage() {
           { label: "Active", value: "active" },
           { label: "Inactive", value: "inactive" },
         ],
+      },
+      {
+        id: "testing",
+        title: "Testing Status",
+        type: "combobox",
+        options: [
+          { label: "Test", value: "test1" },
+          { label: "Test2", value: "test2" },
+        ],
+      },
+      {
+        id: "created_at",
+        title: "Created At",
+        type: "datepicker",
+        datePickerProps: {
+          granularity: "day",
+        },
+        placeholder: "Filter by Created At",
+      },
+      {
+        id: "updated_at",
+        title: "Updated At",
+        type: "datepicker",
+        datePickerProps: {
+          granularity: "day",
+        },
+        placeholder: "Filter by Updated At",
       },
     ],
     []
