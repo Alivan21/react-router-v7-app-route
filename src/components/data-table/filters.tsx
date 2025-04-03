@@ -133,6 +133,7 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
             <div className="w-full min-w-28 sm:w-auto" key={column.id}>
               <Combobox
                 defaultOptions={column.options}
+                delay={500}
                 key={selectedOption?.value || "empty"}
                 onChange={(value) => handleComboboxChange(column.id, value)}
                 onSearch={column.onSearch}

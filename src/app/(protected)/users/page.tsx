@@ -15,9 +15,24 @@ import { useUsersQuery } from "@/hooks/api/users/use-users-query";
 import { useTableQueryParams } from "@/hooks/shared/use-table-query-params";
 
 export default function UserPage() {
+  const breadcrumbs: BreadcrumbsItem[] = [
+    {
+      text: "Users",
+      url: ROUTES.USERS.LIST,
+    },
+  ];
+
+  const { queryParams } = useTableQueryParams();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const deleteUserMutation = useDeleteUserMutation(selectedUserId);
+
+  const { data, isLoading, isError } = useUsersQuery({
+    ...queryParams,
+    page: queryParams.page,
+    limit: queryParams.limit,
+    search: queryParams.search,
+  });
 
   const handleDeleteClick = (userId: string) => {
     setSelectedUserId(userId);
@@ -35,21 +50,6 @@ export default function UserPage() {
     });
     setDeleteDialogOpen(false);
   };
-
-  const breadcrumbs: BreadcrumbsItem[] = [
-    {
-      text: "Users",
-      url: ROUTES.USERS.LIST,
-    },
-  ];
-
-  const { queryParams } = useTableQueryParams();
-  const { data, isLoading, isError } = useUsersQuery({
-    ...queryParams,
-    page: queryParams.page,
-    limit: queryParams.limit,
-    search: queryParams.search,
-  });
 
   const columns: TableColumnDef<TUserItem>[] = [
     {
