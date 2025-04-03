@@ -21,7 +21,8 @@ export type FilterableColumn =
       type: "dropdown" | "combobox";
       placeholder?: string;
       onSearch?: (value: string) => Promise<Option[]>;
-      options: Option[];
+      triggerSearchOnFocus?: boolean;
+      options?: Option[];
       datePickerProps?: never;
     }
   | {
@@ -127,7 +128,7 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
 
         if (column.type === "combobox") {
           const currentValue = getFilterValue(column.id);
-          const selectedOption = column.options.find((option) => option.value === currentValue);
+          const selectedOption = column.options?.find((option) => option.value === currentValue);
 
           return (
             <div className="w-full min-w-28 sm:w-auto" key={column.id}>
@@ -138,6 +139,7 @@ export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersP
                 onChange={(value) => handleComboboxChange(column.id, value)}
                 onSearch={column.onSearch}
                 placeholder={column.placeholder || `Filter by ${column.title}`}
+                triggerSearchOnFocus={column.triggerSearchOnFocus || true}
                 value={selectedOption}
               />
             </div>
