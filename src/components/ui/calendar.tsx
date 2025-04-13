@@ -3,6 +3,7 @@ import { type Locale, enUS } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 import { DayPicker } from "react-day-picker";
+import { MonthYearGrid } from "@/components/datetime-picker/month-year-grid";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Select,
@@ -19,15 +20,6 @@ function genMonths(locale: Pick<Locale, "options" | "localize" | "formatLong">) 
   return Array.from({ length: 12 }, (_, i) => ({
     value: i,
     label: format(new Date(2021, i), "MMMM", { locale }),
-  }));
-}
-
-function genYears(pastYears = 75, futureYears = 2) {
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  return Array.from({ length: pastYears + futureYears + 1 }, (_, i) => ({
-    value: currentYear - pastYears + i,
-    label: (currentYear - pastYears + i).toString(),
   }));
 }
 
@@ -51,8 +43,6 @@ function Calendar({
     }
     return genMonths(locale);
   }, [props.locale]);
-
-  const YEARS = React.useMemo(() => genYears(pastYears, futureYears), [pastYears, futureYears]);
 
   const disableLeftNavigation = () => {
     const today = new Date();
@@ -117,6 +107,22 @@ function Calendar({
             <ChevronRight className="h-5 w-5" />
           ),
         MonthCaption: ({ calendarMonth }) => {
+          const [showYearGrid, setShowYearGrid] = React.useState(false);
+
+          if (showYearGrid) {
+            return (
+              <MonthYearGrid
+                locale={props.locale?.code}
+                onChange={(date) => {
+                  props.onMonthChange?.(date);
+                  setShowYearGrid(false);
+                }}
+                type="year"
+                value={calendarMonth.date}
+              />
+            );
+          }
+
           return (
             <div className="flex w-full items-center justify-between px-1">
               <button
@@ -137,12 +143,12 @@ function Calendar({
               </button>
               <div className="bg-background flex items-center gap-1 rounded-lg px-3 transition-colors">
                 <Select
-                  defaultValue={calendarMonth.date.getMonth().toString()}
                   onValueChange={(value) => {
                     const newDate = new Date(calendarMonth.date);
                     newDate.setMonth(Number.parseInt(value, 10));
                     props.onMonthChange?.(newDate);
                   }}
+                  value={calendarMonth.date.getMonth().toString()}
                 >
                   <SelectTrigger
                     aria-label="Select month"
@@ -162,32 +168,12 @@ function Calendar({
                     ))}
                   </SelectContent>
                 </Select>
-                <Select
-                  defaultValue={calendarMonth.date.getFullYear().toString()}
-                  onValueChange={(value) => {
-                    const newDate = new Date(calendarMonth.date);
-                    newDate.setFullYear(Number.parseInt(value, 10));
-                    props.onMonthChange?.(newDate);
-                  }}
+                <button
+                  className="hover:bg-accent/50 text-foreground h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm focus:outline-none"
+                  onClick={() => setShowYearGrid(true)}
                 >
-                  <SelectTrigger
-                    aria-label="Select year"
-                    className="hover:bg-accent/50 text-foreground h-auto w-fit rounded-sm border-0 border-none p-0 py-0.5 ps-1 shadow-none outline-none focus:ring-0 focus:ring-offset-0"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent align="center" className="max-h-60" position="popper">
-                    {YEARS.map((year) => (
-                      <SelectItem
-                        className="cursor-pointer"
-                        key={year.value}
-                        value={year.value.toString()}
-                      >
-                        {year.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  {calendarMonth.date.getFullYear()}
+                </button>
               </div>
 
               <button

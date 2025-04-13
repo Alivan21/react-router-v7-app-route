@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { cn } from "@/libs/clsx";
 import { Breadcrumbs, BreadcrumbsItem } from "../breadcrumbs";
 import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 
@@ -55,6 +55,7 @@ export default function PageContainer({
             {topActions && topActions}
           </section>
           {children}
+          <ScrollBar className="z-20" />
         </main>
       </div>
     </ScrollArea>
