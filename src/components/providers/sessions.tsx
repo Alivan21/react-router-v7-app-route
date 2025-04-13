@@ -1,9 +1,10 @@
 import React from "react";
 import { login, logout } from "@/api/auth";
 import { TLoginRequest } from "@/api/auth/schema";
+import { UserData } from "@/common/types/user";
 import { httpClient } from "@/libs/axios";
 import { SessionAuthCookies } from "@/libs/cookies";
-import { decodeJwt, JwtPayload as BaseJwtPayload } from "@/utils/jwt";
+import { decodeJwt } from "@/utils/jwt";
 
 interface SessionContextType {
   isAuthenticated: boolean;
@@ -12,16 +13,6 @@ interface SessionContextType {
   login: (credentials: TLoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
-}
-
-/**
- * UserData interface for the JWT payload
- */
-interface UserData extends BaseJwtPayload {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
 }
 
 const SessionContext = React.createContext<SessionContextType>({
@@ -33,11 +24,6 @@ const SessionContext = React.createContext<SessionContextType>({
   isLoading: true,
 });
 
-/**
- * SessionProviderProps interface for the SessionProvider component
- * @interface SessionProviderProps
- * @property {ReactNode} children - The child components
- */
 interface SessionProviderProps {
   children: React.ReactNode;
 }

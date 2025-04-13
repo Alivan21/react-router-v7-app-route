@@ -1,8 +1,5 @@
 import { z } from "zod";
 
-/**
- * Schema for user creation request
- */
 export const createUserSchema = z.object({
   email: z
     .string()
@@ -26,9 +23,6 @@ export const createUserSchema = z.object({
     ),
 });
 
-/**
- * Schema for user update request
- */
 export const updateUserSchema = z.object({
   email: z
     .string()

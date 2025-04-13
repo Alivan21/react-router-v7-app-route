@@ -1,9 +1,6 @@
 import { loginSchema, TLoginRequest } from "./schema";
 import { TLoginResponse } from "./type";
 
-/**
- * Mock user database
- */
 const MOCK_USERS = [
   {
     id: "1",
@@ -14,10 +11,6 @@ const MOCK_USERS = [
   { id: "2", email: "admin@example.com", password: "admin12345", role: "admin" },
 ];
 
-/**
- * Generate a mock JWT token
- * This is a simplified mock token - don't use this pattern in production
- */
 const generateMockToken = (email: string): string => {
   const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
   const payload = btoa(
@@ -34,9 +27,6 @@ const generateMockToken = (email: string): string => {
   return `${header}.${payload}.${signature}`;
 };
 
-/**
- * Mock login function that validates credentials and returns a JWT token
- */
 export const login = async (credentials: TLoginRequest): Promise<TLoginResponse> => {
   const validationResult = loginSchema.safeParse(credentials);
   if (!validationResult.success) {
@@ -69,9 +59,6 @@ export const login = async (credentials: TLoginRequest): Promise<TLoginResponse>
   return response;
 };
 
-/**
- * Mock logout function
- */
 export const logout = async (): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   return Promise.resolve();

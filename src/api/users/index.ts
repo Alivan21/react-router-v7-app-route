@@ -6,7 +6,6 @@ import {
   TUserQueryParams,
 } from "./type";
 
-// Mock users data
 const mockUsers: TUserItem[] = [
   {
     id: "1",
@@ -113,9 +112,6 @@ const mockUsers: TUserItem[] = [
 // Simulated API delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/**
- * Get a paginated list of users
- */
 export async function getUsers(params: TUserQueryParams): Promise<TUserListResponse> {
   await delay(500);
 
@@ -158,9 +154,7 @@ export async function getUsers(params: TUserQueryParams): Promise<TUserListRespo
     },
   };
 }
-/**
- * Get a user by ID
- */
+
 export async function getUserById(id: string): Promise<TUserResponse> {
   await delay(300);
 
@@ -177,9 +171,6 @@ export async function getUserById(id: string): Promise<TUserResponse> {
   };
 }
 
-/**
- * Create a new user
- */
 export async function createUser(
   userData: Omit<TUserItem, "id" | "created_at" | "updated_at" | "deleted_at">
 ): Promise<TUserResponse> {
@@ -203,9 +194,6 @@ export async function createUser(
   };
 }
 
-/**
- * Update an existing user
- */
 export async function updateUser(
   id: string,
   userData: Partial<Omit<TUserItem, "id" | "created_at" | "updated_at" | "deleted_at">>
@@ -234,9 +222,6 @@ export async function updateUser(
   };
 }
 
-/**
- * Delete a user (soft delete)
- */
 export async function deleteUser(id: string): Promise<TUserApiResponse> {
   await delay(400);
 

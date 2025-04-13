@@ -53,7 +53,6 @@ export default tseslint.config(
       "react/display-name": "warn",
       "react/self-closing-comp": "warn",
       "react/jsx-sort-props": "warn",
-      "react-refresh/only-export-components": "off",
       "react/prop-types": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "import/order": [
