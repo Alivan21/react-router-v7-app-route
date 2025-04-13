@@ -35,7 +35,7 @@ import { DataTableViewOptions } from "./view-options";
 export type TableColumnDef<TData, TValue = unknown> = ColumnDef<TData, TValue> & {
   width?: number;
 };
-interface DataTableProps<TData, TValue> {
+type DataTableProps<TData, TValue> = {
   columns: TableColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
@@ -45,7 +45,7 @@ interface DataTableProps<TData, TValue> {
   searchColumn?: string;
   filterableColumns?: FilterableColumn[];
   initialColumnVisibility?: VisibilityState;
-}
+};
 
 function getColumnWidth<TData, TValue = unknown>(columnDef: TableColumnDef<TData, TValue>): string {
   return columnDef.width ? `${columnDef.width}px` : "auto";

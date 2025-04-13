@@ -3,12 +3,12 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/libs/clsx";
 
-interface MonthYearGridProps {
+type MonthYearGridProps = {
   type: "month" | "year";
   value?: Date;
   onChange?: (date: Date) => void;
   locale?: Intl.LocalesArgument;
-}
+};
 
 export function MonthYearGrid({ type, value = new Date(), onChange, locale }: MonthYearGridProps) {
   const [currentDate, setCurrentDate] = React.useState(value || new Date());

@@ -2,19 +2,19 @@ import * as React from "react";
 import { useIsMobile } from "@/hooks/shared/use-mobile";
 import { cn } from "@/libs/clsx";
 
-interface DescriptionsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+type DescriptionsProps = Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & {
   title?: React.ReactNode;
   bordered?: boolean;
   column?: number;
   children?: React.ReactNode;
-}
+};
 
-interface DescriptionsItemProps extends React.HTMLAttributes<HTMLTableCellElement> {
+type DescriptionsItemProps = React.HTMLAttributes<HTMLTableCellElement> & {
   label: React.ReactNode;
   span?: number;
   labelClassName?: string;
   contentClassName?: string;
-}
+};
 
 const useDescriptionsGrid = (
   children: React.ReactNode,

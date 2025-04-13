@@ -20,13 +20,13 @@ import {
 import { useSession } from "../providers/sessions";
 import { Button } from "../ui/button";
 
-export interface UserNavigationProps {
+export type UserNavigationProps = {
   user: {
     name: string;
     email: string;
     avatar: string;
   };
-}
+};
 
 export function UserNavigation({ user }: UserNavigationProps) {
   const { isMobile } = useSidebar();

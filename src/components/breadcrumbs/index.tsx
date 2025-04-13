@@ -3,15 +3,15 @@ import React from "react";
 import { Link } from "react-router";
 import { ROUTES } from "@/common/constants/routes";
 
-export interface BreadcrumbsItem {
+export type BreadcrumbsItem = {
   text: string | React.ReactNode;
   url: string;
-}
+};
 
-interface BreadcrumbsProps {
+type BreadcrumbsProps = {
   items?: BreadcrumbsItem[];
   showHomeIcon?: boolean;
-}
+};
 
 export function Breadcrumbs({ items = [], showHomeIcon = true }: BreadcrumbsProps) {
   const hasBreadcrumbs = items.length > 0;

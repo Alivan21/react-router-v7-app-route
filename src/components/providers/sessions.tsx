@@ -6,14 +6,14 @@ import { httpClient } from "@/libs/axios";
 import { SessionAuthCookies } from "@/libs/cookies";
 import { decodeJwt } from "@/utils/jwt";
 
-interface SessionContextType {
+type SessionContextType = {
   isAuthenticated: boolean;
   user: UserData | null;
   token: string | null;
   login: (credentials: TLoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
-}
+};
 
 const SessionContext = React.createContext<SessionContextType>({
   isAuthenticated: false,
@@ -24,9 +24,9 @@ const SessionContext = React.createContext<SessionContextType>({
   isLoading: true,
 });
 
-interface SessionProviderProps {
+type SessionProviderProps = {
   children: React.ReactNode;
-}
+};
 
 /**
  * SessionProvider component to manage authentication state

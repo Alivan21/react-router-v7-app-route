@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Table } from "@tanstack/react-table";
 
-interface DataTableViewOptionsProps<TData> {
+type DataTableViewOptionsProps<TData> = {
   table: Table<TData>;
-}
+};
 
 export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   return (

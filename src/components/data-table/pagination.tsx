@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/select";
 import type { Table } from "@tanstack/react-table";
 
-interface DataTablePaginationProps<TData> {
+type DataTablePaginationProps<TData> = {
   table: Table<TData>;
   totalCount: number;
-}
+};
 
 export function DataTablePagination<TData>({ table, totalCount }: DataTablePaginationProps<TData>) {
   return (

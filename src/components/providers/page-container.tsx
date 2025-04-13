@@ -7,7 +7,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 
-interface PageContainerProps {
+type PageContainerProps = {
   children?: React.ReactNode;
   topActions?: React.ReactNode;
   breadcrumbs?: BreadcrumbsItem[];
@@ -15,7 +15,7 @@ interface PageContainerProps {
   showHomeIcon?: boolean;
   title?: string;
   withBackButton?: boolean;
-}
+};
 
 export default function PageContainer({
   children,

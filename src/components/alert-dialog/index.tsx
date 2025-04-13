@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { buttonVariants } from "@/components/ui/button";
 
-interface AlertConfirmDialogProps {
+type AlertConfirmDialogProps = {
   isDestructive?: boolean;
   title?: string;
   description?: string;
@@ -22,7 +22,7 @@ interface AlertConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   icon?: ReactNode;
-}
+};
 
 export default function AlertConfirmDialog({
   isDestructive = false,

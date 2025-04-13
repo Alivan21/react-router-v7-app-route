@@ -18,12 +18,14 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useSession } from "../providers/sessions";
 import { ScrollArea } from "../ui/scroll-area";
 import { UserNavigation } from "./user-navigation";
 
 export function DashboardSidebar() {
   const pathname = useLocation().pathname;
   const { state } = useSidebar();
+  const { user } = useSession();
 
   return (
     <Sidebar collapsible="icon">
@@ -31,15 +33,13 @@ export function DashboardSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg">
-              <Link to="#">
-                <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <LayoutDashboard className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Acme Inc</span>
-                  <span className="text-muted-foreground text-xs">Dashboard</span>
-                </div>
-              </Link>
+              <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <LayoutDashboard className="size-4" />
+              </div>
+              <div className="flex flex-col gap-0.5 leading-none">
+                <span className="font-semibold">Acme Inc</span>
+                <span className="text-muted-foreground text-xs">Dashboard</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -123,8 +123,8 @@ export function DashboardSidebar() {
       <SidebarFooter className="border-t">
         <UserNavigation
           user={{
-            name: "John Doe",
-            email: "john@example.com",
+            name: user?.name || "John Doe",
+            email: user?.email || "user@example.com",
             avatar: "/placeholder.png",
           }}
         />
