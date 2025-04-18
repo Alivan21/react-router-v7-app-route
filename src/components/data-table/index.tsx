@@ -10,11 +10,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { format } from "date-fns"; // Add this import
+import { format } from "date-fns";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -23,13 +22,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useDebounce } from "@/hooks/shared/use-debounce";
 import { cn } from "@/libs/clsx";
-import type React from "react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useSidebar } from "../ui/sidebar";
 import { DataTableFilters, FilterableColumn } from "./filters";
 import { DataTablePagination } from "./pagination";
+import { SearchInput } from "./search-input";
 import { DataTableViewOptions } from "./view-options";
 
 export type TableColumnDef<TData, TValue = unknown> = ColumnDef<TData, TValue> & {
@@ -69,8 +67,6 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     initialColumnVisibility || {}
   );
-  const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
-  const debouncedSearchValue = useDebounce<string>(searchValue, 500);
 
   const updateUrl = useCallback(
     (newParams: Record<string, string | number | null>) => {
@@ -92,14 +88,6 @@ export function DataTable<TData, TValue>({
     },
     [setSearchParams]
   );
-
-  useEffect(() => {
-    if (debouncedSearchValue) {
-      updateUrl({ search: debouncedSearchValue });
-    } else {
-      updateUrl({ search: null });
-    }
-  }, [debouncedSearchValue, updateUrl]);
 
   useEffect(() => {
     const initialFilters: ColumnFiltersState = [];
@@ -217,9 +205,16 @@ export function DataTable<TData, TValue>({
     manualFiltering: true,
   });
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
+  const handleSearch = useCallback(
+    (value: string) => {
+      if (value) {
+        updateUrl({ search: value });
+      } else {
+        updateUrl({ search: null });
+      }
+    },
+    [updateUrl]
+  );
 
   if (isError) {
     return <div>Error loading data</div>;
@@ -229,15 +224,11 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       <div className="flex flex-col gap-2">
         <div className="flex flex-col justify-between gap-4 sm:flex-row">
-          <div className="w-full sm:max-w-sm">
-            <Input
-              className="w-full"
-              onChange={handleSearchChange}
-              placeholder={`Search by ${searchColumn}...`}
-              value={searchValue}
-            />
-          </div>
-
+          <SearchInput
+            initialValue={searchParams.get("search") || ""}
+            onSearch={handleSearch}
+            placeholder={`Search by ${searchColumn}...`}
+          />
           <div className="flex justify-end">
             <DataTableViewOptions table={table} />
           </div>
