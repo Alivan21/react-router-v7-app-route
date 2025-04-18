@@ -520,4 +520,4 @@ function Combobox({
 }
 
 Combobox.displayName = "Combobox";
-export default memo(Combobox);
+export default Combobox;
