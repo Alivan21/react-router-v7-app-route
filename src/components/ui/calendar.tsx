@@ -31,6 +31,8 @@ function Calendar({
   futureYears = 2,
   ...props
 }: CalendarProps & { pastYears?: number; futureYears?: number }) {
+  const [showYearGrid, setShowYearGrid] = React.useState(false);
+
   const MONTHS = React.useMemo(() => {
     let locale: Pick<Locale, "options" | "localize" | "formatLong"> = enUS;
     const { options, localize, formatLong } = props.locale || {};
@@ -67,6 +69,22 @@ function Calendar({
     }
     return false;
   };
+
+  if (showYearGrid) {
+    return (
+      <div className={cn("p-3", className)}>
+        <MonthYearGrid
+          locale={props.locale?.code}
+          onChange={(date) => {
+            props.onMonthChange?.(date);
+            setShowYearGrid(false);
+          }}
+          type="year"
+          value={props.month || new Date()}
+        />
+      </div>
+    );
+  }
 
   return (
     <DayPicker
@@ -107,22 +125,6 @@ function Calendar({
             <ChevronRight className="h-5 w-5" />
           ),
         MonthCaption: ({ calendarMonth }) => {
-          const [showYearGrid, setShowYearGrid] = React.useState(false);
-
-          if (showYearGrid) {
-            return (
-              <MonthYearGrid
-                locale={props.locale?.code}
-                onChange={(date) => {
-                  props.onMonthChange?.(date);
-                  setShowYearGrid(false);
-                }}
-                type="year"
-                value={calendarMonth.date}
-              />
-            );
-          }
-
           return (
             <div className="flex w-full items-center justify-between px-1">
               <button
@@ -138,6 +140,7 @@ function Calendar({
                   newDate.setMonth(newDate.getMonth() - 1);
                   props.onMonthChange?.(newDate);
                 }}
+                type="button"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -171,6 +174,7 @@ function Calendar({
                 <button
                   className="hover:bg-accent/50 text-foreground h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm focus:outline-none"
                   onClick={() => setShowYearGrid(true)}
+                  type="button"
                 >
                   {calendarMonth.date.getFullYear()}
                 </button>
@@ -181,7 +185,7 @@ function Calendar({
                 className={cn(
                   buttonVariants({ variant: "outline", size: "icon" }),
                   "hover:bg-accent hover:text-accent-foreground size-7 transition-colors",
-                  disableLeftNavigation() && "pointer-events-none opacity-30"
+                  disableRightNavigation() && "pointer-events-none opacity-30"
                 )}
                 disabled={disableRightNavigation()}
                 onClick={() => {
@@ -189,6 +193,7 @@ function Calendar({
                   newDate.setMonth(newDate.getMonth() + 1);
                   props.onMonthChange?.(newDate);
                 }}
+                type="button"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>

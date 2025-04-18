@@ -228,6 +228,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
               className
             )}
             ref={buttonRef}
+            type="button"
             variant="outline"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -303,6 +304,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
                   className="px-2 text-sm font-normal"
                   onClick={handleClear}
                   size="sm"
+                  type="button"
                   variant="outline"
                 >
                   Clear
@@ -311,6 +313,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
                   className="px-2 text-sm font-normal"
                   onClick={handleToday}
                   size="sm"
+                  type="button"
                   variant="default"
                 >
                   Today
@@ -326,8 +329,5 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
 
 DateTimePicker.displayName = "DateTimePicker";
 
-const MemoizedDateTimePicker = React.memo(DateTimePicker);
-MemoizedDateTimePicker.displayName = "DateTimePicker";
-
-export { MemoizedDateTimePicker as DateTimePicker, TimePickerInput, TimePicker };
+export { DateTimePicker, TimePickerInput, TimePicker };
 export type { DateTimePickerProps, DateTimePickerRef, TimePickerType, Granularity };
