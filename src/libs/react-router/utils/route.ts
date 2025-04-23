@@ -63,6 +63,32 @@ export function mergeRoutes(
 
   // Handle nested routes
   if (source.children && source.children.length > 0) {
+    // If target is currently a page but source adds children,
+    // convert target's page to an index route before merging children.
+    if (target.handle?.pageType === "page") {
+      // Ensure children array exists and no index route already exists
+      if (!target.children?.some((child) => child.index)) {
+        target.children = target.children || [];
+        target.children.unshift({
+          // Use unshift to prioritize index over potential later merges
+          index: true,
+          element: target.element,
+          HydrateFallback: target.HydrateFallback, // Copy relevant props
+          action: target.action,
+          loader: target.loader,
+          handle: target.handle, // Keep handle for the index page
+          errorElement: target.errorElement,
+          // Note: LoadingComponent might apply to the parent layout scope, consider if it should be copied here
+        });
+      }
+      // Clear page-specific properties from target as it now acts primarily as a parent/layout
+      // Keep properties that might apply to a layout scope (like ErrorBoundary, HydrateFallback)
+      delete target.element;
+      delete target.action;
+      delete target.loader;
+      // Remove the handle or change it to 'layout' if layouts use handles differently
+      delete target.handle;
+    }
     mergeChildRoutes(target, source);
   }
 
@@ -141,21 +167,32 @@ export function handlePageMerge(
   }
 
   // If there's no index route yet, add this page as index
-  if (!target.children.some((child) => child.index)) {
-    target.children.unshift({
-      index: true,
-      element: source.element,
-      HydrateFallback: source.HydrateFallback,
-      LoadingComponent: source.LoadingComponent,
-      action: source.action,
-      loader: source.loader,
-      handle: source.handle,
-    });
+  // Also handles the case where target is a layout and source is a page for the same path
+  if (!target.children.some((child) => child.index) || target.handle?.pageType === "layout") {
+    // Check if target is a layout, if so, use addRouteAsIndexRouteForTargetRoute
+    if (target.handle?.pageType === "layout") {
+      addRouteAsIndexRouteForTargetRoute(target, source);
+    } else {
+      // Otherwise, just add the source page as the index route
+      target.children.unshift({
+        // Use unshift to prioritize index
+        index: true,
+        element: source.element,
+        HydrateFallback: source.HydrateFallback,
+        LoadingComponent: source.LoadingComponent,
+        action: source.action,
+        loader: source.loader,
+        handle: source.handle,
+        errorElement: source.errorElement, // Add errorElement if source has one
+      });
+    }
   }
-  // If target is a layout, add page as index route
-  else if (target.handle?.pageType === "layout") {
-    target = addRouteAsIndexRouteForTargetRoute(target, source);
-  }
+  // If an index route already exists and target is not a layout, the new page might be ignored or log a warning.
+  // Current logic prioritizes the first page found as index.
+
+  // If the target was previously just a placeholder parent created during nesting,
+  // ensure layout-like properties from the source page (if it implies a layout structure implicitly) are considered.
+  // This part might need refinement based on how layouts are implicitly handled.
 
   return target;
 }
