@@ -20,13 +20,8 @@ export function createRoutesFromFiles(
   notFoundFiles: Record<string, () => Promise<unknown>> = {},
   loadingFiles: Record<string, () => Promise<unknown>> = {}
 ): RouteObject {
-  // Step 1: Convert page files to routes with loading components
   const routes = convertPagesToRoute(pageFiles, loadingFiles) as RouteObject;
-
-  // Step 2: Add error boundaries to routes
   addErrorElementToRoutes(errorFiles, routes);
-
-  // Step 3: Add 404 pages to routes
   add404PageToRoutesChildren(notFoundFiles, routes);
 
   return routes;

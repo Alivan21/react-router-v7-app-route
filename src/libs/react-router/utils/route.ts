@@ -86,7 +86,6 @@ export function mergeRoutes(
       delete target.element;
       delete target.action;
       delete target.loader;
-      // Remove the handle or change it to 'layout' if layouts use handles differently
       delete target.handle;
     }
     mergeChildRoutes(target, source);
