@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { login, logout } from "@/api/auth";
 import { TLoginRequest } from "@/api/auth/schema";
 import { UserData } from "@/common/types/user";
@@ -131,9 +131,9 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
  * @throws {Error} If used outside of SessionProvider
  */
 export const useSession = (): SessionContextType => {
-  const context = React.useContext(SessionContext);
+  const context = use(SessionContext);
 
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useSession must be used within a SessionProvider");
   }
 
