@@ -109,7 +109,7 @@ const transToGroupOption = (options: Option[], groupBy?: string) => {
 const CommandEmpty = memo(
   ({
     className,
-    ref: forwardedRef,
+    ref,
     ...props
   }: React.ComponentProps<typeof CommandPrimitive.Empty> & {
     ref?: React.Ref<HTMLDivElement>;
@@ -121,7 +121,7 @@ const CommandEmpty = memo(
     return (
       <div
         className={cn("py-6 text-center text-sm", className)}
-        ref={forwardedRef}
+        ref={ref}
         role="presentation"
         {...props}
       />
