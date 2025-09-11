@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-type UserFormKey = keyof TCreateUserRequest & keyof TUpdateUserRequest;
+type UserFormKey = keyof TCreateUserRequest;
 
 type UserFormProps<T extends TCreateUserRequest | TUpdateUserRequest> = {
   form: UseFormReturn<T>;

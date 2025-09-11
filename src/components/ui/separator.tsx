@@ -1,7 +1,7 @@
-import * as SeparatorPrimitive from "@radix-ui/react-separator"
-import * as React from "react"
+import * as SeparatorPrimitive from "@radix-ui/react-separator";
+import * as React from "react";
 
-import { cn } from "@/libs/clsx"
+import { cn } from "@/libs/clsx";
 
 function Separator({
   className,
@@ -20,7 +20,7 @@ function Separator({
       orientation={orientation}
       {...props}
     />
-  )
+  );
 }
 
-export { Separator }
+export { Separator };
