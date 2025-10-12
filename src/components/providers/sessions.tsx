@@ -1,4 +1,5 @@
-import React, { use } from "react";
+import { createContext, use, useEffect, useMemo, useState } from "react";
+
 import { login, logout } from "@/api/auth";
 import { TLoginRequest } from "@/api/auth/schema";
 import { UserData } from "@/common/types/user";
@@ -15,7 +16,7 @@ type SessionContextType = {
   isLoading: boolean;
 };
 
-const SessionContext = React.createContext<SessionContextType>({
+const SessionContext = createContext<SessionContextType>({
   isAuthenticated: false,
   user: null,
   token: null,
@@ -36,12 +37,12 @@ type SessionProviderProps = {
 export const SessionProvider: React.FC<SessionProviderProps> = ({
   children,
 }: SessionProviderProps): React.JSX.Element => {
-  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
-  const [user, setUser] = React.useState<UserData | null>(null);
-  const [token, setToken] = React.useState<string | null>(null);
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const initializeAuth = () => {
       const storedToken = SessionAuthCookies.get();
 
@@ -110,7 +111,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
     }
   };
 
-  const contextValue = React.useMemo(
+  const contextValue = useMemo(
     () => ({
       isAuthenticated,
       user,
