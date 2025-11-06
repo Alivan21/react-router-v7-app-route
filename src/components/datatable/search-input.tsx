@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/shared/use-debounce";
 
-interface SearchInputProps {
+type SearchInputProps = {
   initialValue: string;
   placeholder: string;
   onSearch: (value: string) => void;
-}
+};
 
 export function SearchInput({ initialValue = "", placeholder, onSearch }: SearchInputProps) {
   const [searchValue, setSearchValue] = useState(initialValue);

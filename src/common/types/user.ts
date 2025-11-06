@@ -1,8 +1,8 @@
 import { JwtPayload } from "@/utils/jwt";
 
-export interface UserData extends JwtPayload {
+export type UserData = JwtPayload & {
   id: string;
   email: string;
   name: string;
   role: string;
-}
+};

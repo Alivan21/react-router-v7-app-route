@@ -14,18 +14,18 @@ import { useDebounce } from "@/hooks/shared/use-debounce";
 import { cn } from "@/libs/clsx";
 import { ScrollArea } from "./scroll-area";
 
-export interface Option {
+export type Option = {
   value: string;
   label: string;
   disable?: boolean;
   /** Group the options by providing key. */
   [key: string]: string | boolean | undefined;
-}
-interface GroupOption {
+};
+type GroupOption = {
   [key: string]: Option[];
-}
+};
 
-interface ComboboxProps {
+type ComboboxProps = {
   value?: Option;
   defaultOptions?: Option[];
   /** manually controlled options */
@@ -72,14 +72,14 @@ interface ComboboxProps {
     "value" | "placeholder" | "disabled"
   >;
   ref?: React.Ref<ComboboxRef>;
-}
+};
 
-export interface ComboboxRef {
+export type ComboboxRef = {
   selectedValue: Option | undefined;
   input: HTMLInputElement;
   focus: () => void;
   reset: () => void;
-}
+};
 
 const transToGroupOption = (options: Option[], groupBy?: string) => {
   if (options.length === 0) {

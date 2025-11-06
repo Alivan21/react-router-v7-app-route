@@ -37,10 +37,10 @@ export type FilterableColumn =
       };
     };
 
-interface DataTableFiltersProps<TData> {
+type DataTableFiltersProps<TData> = {
   table: Table<TData>;
   filterableColumns: FilterableColumn[];
-}
+};
 
 export function DataTableFilters<TData>({ filterableColumns }: DataTableFiltersProps<TData>) {
   const [searchParams, setSearchParams] = useSearchParams();

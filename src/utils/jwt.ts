@@ -1,4 +1,4 @@
-export interface JwtPayload {
+export type JwtPayload = {
   iss?: string; // issuer
   sub?: string; // subject
   aud?: string | string[]; // audience
@@ -7,7 +7,7 @@ export interface JwtPayload {
   iat?: number; // issued at
   jti?: string; // JWT ID
   [key: string]: unknown; // allow for additional properties
-}
+};
 
 export const decodeJwt = <T extends JwtPayload = JwtPayload>(token: string): T => {
   const base64Url = token.split(".")[1];

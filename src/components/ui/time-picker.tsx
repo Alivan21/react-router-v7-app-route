@@ -204,7 +204,7 @@ function display12HourValue(hours: number) {
 
 // ---------- utils end ----------
 
-interface PeriodSelectorProps {
+type PeriodSelectorProps = {
   period: Period;
   setPeriod?: (m: Period) => void;
   date?: Date | null;
@@ -212,7 +212,7 @@ interface PeriodSelectorProps {
   onRightFocus?: () => void;
   onLeftFocus?: () => void;
   ref?: React.Ref<HTMLButtonElement>;
-}
+};
 
 const TimePeriodSelect = ({
   period,
@@ -265,7 +265,7 @@ const TimePeriodSelect = ({
 
 TimePeriodSelect.displayName = "TimePeriodSelect";
 
-interface TimePickerInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type TimePickerInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   picker: TimePickerType;
   date?: Date | null;
   onDateChange?: (date: Date | undefined) => void;
@@ -273,7 +273,7 @@ interface TimePickerInputProps extends React.InputHTMLAttributes<HTMLInputElemen
   onRightFocus?: () => void;
   onLeftFocus?: () => void;
   ref?: React.Ref<HTMLInputElement>;
-}
+};
 
 export const TimePickerInput = ({
   className,
@@ -377,7 +377,7 @@ TimePickerInput.displayName = "TimePickerInput";
 
 type Granularity = "year" | "month" | "day" | "hour" | "minute" | "second";
 
-interface TimePickerProps {
+type TimePickerProps = {
   date?: Date | null;
   onChange?: (date: Date | undefined) => void;
   hourCycle?: 12 | 24;
@@ -387,13 +387,13 @@ interface TimePickerProps {
    * */
   granularity?: Granularity;
   ref?: React.Ref<TimePickerRef>;
-}
+};
 
-interface TimePickerRef {
+type TimePickerRef = {
   minuteRef: HTMLInputElement | null;
   hourRef: HTMLInputElement | null;
   secondRef: HTMLInputElement | null;
-}
+};
 
 export const TimePicker = ({
   date,

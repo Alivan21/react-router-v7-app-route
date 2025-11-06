@@ -1,10 +1,10 @@
 /**
- * Middleware interface
+ * Middleware type
  */
-export interface Middleware {
+export type Middleware = {
   matcher?: string | RegExp | ((path: string) => boolean);
   handler: MiddlewareHandler;
-}
+};
 
 /**
  * Middleware handler function type
@@ -17,17 +17,17 @@ export type MiddlewareHandler = (
 /**
  * Context provided to middleware
  */
-export interface MiddlewareContext {
+export type MiddlewareContext = {
   params: Record<string, string | undefined>;
   path: string;
   next: () => Promise<unknown>;
-}
+};
 
 /**
  * Response from middleware
  */
-export interface MiddlewareResponse {
+export type MiddlewareResponse = {
   redirect?: string | Response;
   rewrite?: string;
   headers?: Record<string, string>;
-}
+};

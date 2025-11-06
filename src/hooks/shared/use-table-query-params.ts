@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 
-// Define a base interface for table query parameters
-interface BaseTableParams {
+// Define a base type for table query parameters
+type BaseTableParams = {
   page?: number;
   limit?: number;
   search?: string;
   sort?: string;
   order?: string;
   [key: string]: unknown;
-}
+};
 
 /**
  * Custom hook that syncs URL search parameters with data table state
