@@ -222,7 +222,7 @@ const DateTimePicker = ({
         <Button
           className={cn(
             "hover:bg-accent/30 hover:border-accent w-full justify-start text-left font-normal transition-colors",
-            "focus:border-ring focus:ring-ring/50 hover:border-ring hover:ring-ring/50 hover:ring-[3px] focus:ring-[3px]",
+            "focus:border-ring focus:ring-ring/50 hover:border-ring hover:ring-ring/50 hover:ring-1 focus:ring-1",
             !displayDate && "text-muted-foreground",
             className
           )}
