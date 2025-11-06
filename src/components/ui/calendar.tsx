@@ -3,8 +3,8 @@ import { type Locale, enUS } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 import { DayPicker } from "react-day-picker";
-import { MonthYearGrid } from "@/components/datetime-picker/month-year-grid";
 import { buttonVariants } from "@/components/ui/button";
+import { MonthYearGrid } from "@/components/ui/month-year-grid";
 import {
   Select,
   SelectContent,

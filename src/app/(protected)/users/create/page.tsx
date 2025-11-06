@@ -5,8 +5,8 @@ import { useNavigate } from "react-router";
 import { createUserSchema, TCreateUserRequest } from "@/api/users/schema";
 import { ROUTES } from "@/common/constants/routes";
 import PageContainer from "@/components/providers/page-container";
-import { useCreateUserMutation } from "@/hooks/api/users/use-create-user-mutation";
 import UserForm from "../_components/form-user";
+import { useCreateUserMutation } from "./_hooks/use-create-user-mutation";
 
 export default function CreateUserPage() {
   const breadcrumbs = [

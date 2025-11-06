@@ -2,6 +2,7 @@ import pluginJs from "@eslint/js";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import prettierConfig from "eslint-config-prettier";
+import prettierPlugin from "eslint-plugin-prettier";
 import importPlugin from "eslint-plugin-import";
 import jsxA11yPlugin from "eslint-plugin-jsx-a11y";
 import reactPlugin from "eslint-plugin-react";
@@ -11,14 +12,13 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 
-export default tseslint.config(
-  { ignores: ["dist", "node_modules/*", "!.prettierrc"] },
+export default [
+  { ignores: ["dist", "dev-dist", "node_modules/*", "!.prettierrc"] },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...pluginQuery.configs["flat/recommended"],
+  prettierConfig,
   {
-    extends: [
-      pluginJs.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...pluginQuery.configs["flat/recommended"],
-    ],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
@@ -39,7 +39,7 @@ export default tseslint.config(
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       "jsx-a11y": jsxA11yPlugin,
-      ...prettierConfig,
+      prettier: prettierPlugin,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -84,11 +84,12 @@ export default tseslint.config(
       "import/first": "off",
       "import/newline-after-import": "off",
       "import/no-duplicates": "warn",
+      "prettier/prettier": "warn",
     },
     settings: {
       react: {
         version: "detect",
       },
     },
-  }
-);
+  },
+];

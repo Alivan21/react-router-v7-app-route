@@ -1,10 +1,10 @@
 import { format } from "date-fns";
 import { Filter, X } from "lucide-react";
-import { useState, memo, useEffect } from "react";
+import { useState, memo, useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router";
-import { DateTimePicker } from "@/components/datetime-picker";
 import { Button } from "@/components/ui/button";
 import Combobox, { Option } from "@/components/ui/combobox";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -185,19 +185,25 @@ const ComboboxFilter = memo(
     currentValue: string | undefined;
     handleChange: (columnId: string, value: Option | undefined) => void;
   }) => {
-    const [selectedOption, setSelectedOption] = useState<Option | undefined>(
-      currentValue !== undefined
-        ? column.options?.find((option) => option.value === currentValue)
-        : undefined
-    );
-
-    useEffect(() => {
-      const newOption =
+    const derivedOption = useMemo(
+      () =>
         currentValue !== undefined
           ? column.options?.find((option) => option.value === currentValue)
-          : undefined;
-      setSelectedOption(newOption);
-    }, [currentValue, column.options]);
+          : undefined,
+      [currentValue, column.options]
+    );
+
+    const [selectedOption, setSelectedOption] = useState<Option | undefined>(derivedOption);
+    const prevDerivedOptionRef = useRef(derivedOption);
+
+    useEffect(() => {
+      if (prevDerivedOptionRef.current !== derivedOption) {
+        prevDerivedOptionRef.current = derivedOption;
+        queueMicrotask(() => {
+          setSelectedOption(derivedOption);
+        });
+      }
+    }, [derivedOption]);
 
     if (column.type !== "combobox" && column.type !== "dropdown") {
       return null;

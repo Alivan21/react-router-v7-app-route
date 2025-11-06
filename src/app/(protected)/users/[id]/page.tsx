@@ -2,16 +2,16 @@ import { Edit2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useParams, Link, useNavigate } from "react-router";
+import { useUserQuery } from "@/app/(protected)/users/[id]/_hooks/use-user-query";
+import { useDeleteUserMutation } from "@/app/(protected)/users/_hooks/use-delete-user-mutation";
 import Loading from "@/app/loading";
 import { ROUTES } from "@/common/constants/routes";
 import AlertConfirmDialog from "@/components/alert-dialog";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
-import { Descriptions } from "@/components/descriptions";
 import PageContainer from "@/components/providers/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useDeleteUserMutation } from "@/hooks/api/users/use-delete-user-mutation";
-import { useUserQuery } from "@/hooks/api/users/use-user-query";
+import { Descriptions } from "@/components/ui/descriptions";
 
 export default function DetailUserPage() {
   const { id } = useParams();
@@ -56,26 +56,13 @@ export default function DetailUserPage() {
     }
   };
 
-  const TopActions = () => (
-    <div className="flex gap-2">
-      <Button asChild variant="info">
-        <Link to={ROUTES.USERS.EDIT.replace(":id", id || "")}>
-          <Edit2 className="size-4" />
-          Edit
-        </Link>
-      </Button>
-      <Button disabled={isPending} onClick={handleOpenDeleteDialog} variant="destructive">
-        <Trash2 className="size-4" />
-        Delete
-      </Button>
-    </div>
-  );
-
   return (
     <PageContainer
       breadcrumbs={breadcrumbs}
       title="Detail User"
-      topActions={<TopActions />}
+      topActions={
+        <TopActions id={id || ""} isPending={isPending} onDeleteClick={handleOpenDeleteDialog} />
+      }
       withBackButton
     >
       <Descriptions column={2}>
@@ -104,5 +91,28 @@ export default function DetailUserPage() {
         title="Delete User"
       />
     </PageContainer>
+  );
+}
+
+type TopActionsProps = {
+  id: string;
+  isPending: boolean;
+  onDeleteClick: () => void;
+};
+
+function TopActions({ id, isPending, onDeleteClick }: TopActionsProps) {
+  return (
+    <div className="flex gap-2">
+      <Button asChild variant="info">
+        <Link to={ROUTES.USERS.EDIT.replace(":id", id)}>
+          <Edit2 className="size-4" />
+          Edit
+        </Link>
+      </Button>
+      <Button disabled={isPending} onClick={onDeleteClick} variant="destructive">
+        <Trash2 className="size-4" />
+        Delete
+      </Button>
+    </div>
   );
 }

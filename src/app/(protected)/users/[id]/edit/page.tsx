@@ -7,9 +7,9 @@ import { updateUserSchema, TUpdateUserRequest } from "@/api/users/schema";
 import Loading from "@/app/loading";
 import { ROUTES } from "@/common/constants/routes";
 import PageContainer from "@/components/providers/page-container";
-import { useUpdateUserMutation } from "@/hooks/api/users/use-update-user-mutation";
-import { useUserQuery } from "@/hooks/api/users/use-user-query";
 import UserForm from "../../_components/form-user";
+import { useUserQuery } from "../_hooks/use-user-query";
+import { useUpdateUserMutation } from "./_hooks/use-update-user-mutation";
 
 export default function EditUserPage() {
   const { id } = useParams();

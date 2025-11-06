@@ -6,13 +6,13 @@ import { TUserItem } from "@/api/users/type";
 import { ROUTES } from "@/common/constants/routes";
 import AlertConfirmDialog from "@/components/alert-dialog";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
-import { DataTable, TableColumnDef } from "@/components/data-table";
-import { FilterableColumn } from "@/components/data-table/filters";
+import { DataTable, TableColumnDef } from "@/components/datatable";
+import { FilterableColumn } from "@/components/datatable/filters";
 import PageContainer from "@/components/providers/page-container";
 import { Button } from "@/components/ui/button";
-import { useDeleteUserMutation } from "@/hooks/api/users/use-delete-user-mutation";
-import { useUsersQuery } from "@/hooks/api/users/use-users-query";
 import { useTableQueryParams } from "@/hooks/shared/use-table-query-params";
+import { useDeleteUserMutation } from "./_hooks/use-delete-user-mutation";
+import { useUsersQuery } from "./_hooks/use-users-query";
 
 export default function UserPage() {
   const breadcrumbs: BreadcrumbsItem[] = [

@@ -3,10 +3,10 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { ROUTES } from "@/common/constants/routes";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
-import { DateTimePicker } from "@/components/datetime-picker";
 import PageContainer from "@/components/providers/page-container";
 import { Button } from "@/components/ui/button";
 import Combobox from "@/components/ui/combobox";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { Input } from "@/components/ui/input";
 
 export default function DashboardPage() {

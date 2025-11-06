@@ -31,9 +31,9 @@ export default function PageContainer({
   return (
     <ScrollArea className="max-h-svh max-w-dvw flex-1 overflow-hidden">
       <div className="flex min-h-svh flex-col">
-        <header className="bg-background sticky top-0 z-10 flex h-[4.05rem] w-full shrink-0 items-center gap-4 border-b px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[3.05rem] sm:px-6">
+        <header className="bg-background sticky top-0 z-10 flex h-[4.05rem] w-full shrink-0 items-center gap-4 border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-[3.05rem] sm:px-6">
           <SidebarTrigger className="-ml-2" />
-          <Separator className="!h-6" orientation="vertical" />
+          <Separator className="h-6!" orientation="vertical" />
           <Breadcrumbs items={breadcrumbs} showHomeIcon={showHomeIcon} />
         </header>
         <main className={cn("flex min-h-0 flex-1 flex-col gap-4 px-4 py-4 lg:px-8", className)}>
