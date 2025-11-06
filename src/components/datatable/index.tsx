@@ -118,7 +118,7 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       pagination: {
         pageIndex: Number(searchParams.get("page") || "1") - 1,
-        pageSize: Number(searchParams.get("pageSize") || "10"),
+        pageSize: Number(searchParams.get("limit") || "10"),
       },
     },
     onSortingChange: (newSorting) => {
@@ -193,7 +193,7 @@ export function DataTable<TData, TValue>({
         const newPagination = updater(table.getState().pagination);
         updateUrl({
           page: newPagination.pageIndex + 1 > 1 ? newPagination.pageIndex + 1 : null,
-          pageSize: newPagination.pageSize,
+          limit: newPagination.pageSize,
         });
       }
     },
