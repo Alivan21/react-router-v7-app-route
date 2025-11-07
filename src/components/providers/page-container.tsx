@@ -32,12 +32,14 @@ export default function PageContainer({
   return (
     <ScrollArea className="max-h-svh max-w-dvw flex-1 overflow-hidden">
       <div className="flex min-h-svh flex-col">
-        <header className="bg-background sticky top-0 z-10 flex h-[4.05rem] w-full shrink-0 items-center gap-2 border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-[3.05rem] sm:px-6">
-          <SidebarTrigger />
-          <Separator className="h-6!" orientation="vertical" />
+        <header className="bg-background sticky top-0 z-10 flex h-[4.05rem] w-full shrink-0 items-center gap-2 px-4 pt-2 sm:px-6">
+          <Button asChild className="px-0" size="sm" variant="outline">
+            <SidebarTrigger />
+          </Button>
+          <Separator className="mx-2 h-6! w-[1.4px]!" orientation="vertical" />
           <Breadcrumbs items={breadcrumbs} showHomeIcon={showHomeIcon} />
         </header>
-        <main className={cn("flex min-h-0 flex-1 flex-col gap-4 px-4 py-4 lg:px-8", className)}>
+        <main className={cn("flex min-h-0 flex-1 flex-col gap-4 px-4 py-2 lg:px-8", className)}>
           <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             {title && (
               <div className="flex items-center gap-2">
@@ -53,7 +55,7 @@ export default function PageContainer({
                 )}
                 <div className="flex flex-col">
                   <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-                  {description && <p className="text-muted-foreground text-sm">{description}</p>}
+                  {description && <p className="text-muted-foreground">{description}</p>}
                 </div>
               </div>
             )}

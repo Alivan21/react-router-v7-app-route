@@ -15,7 +15,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { ScrollArea } from "../ui/scroll-area";
@@ -26,7 +25,7 @@ export function DashboardSidebar() {
   const { state } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader className="border-b">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -129,7 +128,6 @@ export function DashboardSidebar() {
           }}
         />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }
