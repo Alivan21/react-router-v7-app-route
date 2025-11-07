@@ -1,13 +1,12 @@
 import { Edit2, Trash2 } from "lucide-react";
-import { useState } from "react";
 import toast from "react-hot-toast";
 import { useParams, Link, useNavigate } from "react-router";
 import { useUserQuery } from "@/app/(protected)/users/[id]/_hooks/use-user-query";
 import { useDeleteUserMutation } from "@/app/(protected)/users/_hooks/use-delete-user-mutation";
 import Loading from "@/app/loading";
 import { ROUTES } from "@/common/constants/routes";
-import AlertConfirmDialog from "@/components/alert-dialog";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
+import { ModalConfirm } from "@/components/modal-confirm";
 import PageContainer from "@/components/providers/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,8 +15,7 @@ import { Descriptions } from "@/components/ui/descriptions";
 export default function DetailUserPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { mutate: deleteUser, isPending } = useDeleteUserMutation(id as string);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { mutate: deleteUser, isPending } = useDeleteUserMutation();
 
   const breadcrumbs: BreadcrumbsItem[] = [
     {
@@ -37,23 +35,25 @@ export default function DetailUserPage() {
   }
 
   const handleOpenDeleteDialog = () => {
-    setDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    try {
-      deleteUser(undefined, {
-        onSuccess: () => {
-          toast.success("User deleted successfully");
-          void navigate(ROUTES.USERS.LIST);
-        },
-        onError: (error) => {
-          toast.error(error?.response?.data?.message || "Failed to delete user. Please try again.");
-        },
-      });
-    } catch {
-      toast.error("An error occurred while deleting the user.");
-    }
+    ModalConfirm.show({
+      title: "Delete User",
+      description: `Are you sure you want to delete user ${data?.data?.name}? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: () => {
+        deleteUser(id as string, {
+          onSuccess: () => {
+            toast.success("User deleted successfully");
+            void navigate(ROUTES.USERS.LIST);
+          },
+          onError: (error) => {
+            toast.error(
+              error?.response?.data?.message || "Failed to delete user. Please try again."
+            );
+          },
+        });
+      },
+    });
   };
 
   return (
@@ -79,17 +79,6 @@ export default function DetailUserPage() {
           </Badge>
         </Descriptions.Item>
       </Descriptions>
-
-      <AlertConfirmDialog
-        cancelText="Cancel"
-        continueText="Delete"
-        description={`Are you sure you want to delete user ${data?.data?.name}? This action cannot be undone.`}
-        isDestructive={true}
-        onContinue={handleConfirmDelete}
-        onOpenChange={setDeleteDialogOpen}
-        open={deleteDialogOpen}
-        title="Delete User"
-      />
     </PageContainer>
   );
 }

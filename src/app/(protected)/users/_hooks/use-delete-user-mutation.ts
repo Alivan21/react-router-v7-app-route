@@ -6,9 +6,9 @@ import { useMutation } from "@/hooks/request/use-mutation";
  * Hook to delete a user
  * @param id - The ID of the user to delete
  */
-export const useDeleteUserMutation = (id: string) => {
+export const useDeleteUserMutation = () => {
   return useMutation({
-    mutationFn: () => deleteUser(id),
+    mutationFn: (id: string) => deleteUser(id),
     meta: {
       invalidatesQueries: [QUERY_KEY.USER.ALL],
     },

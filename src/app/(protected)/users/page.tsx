@@ -1,13 +1,12 @@
 import { Edit2, Eye, Trash2 } from "lucide-react";
-import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 import { TUserItem } from "@/api/users/type";
 import { ROUTES } from "@/common/constants/routes";
-import AlertConfirmDialog from "@/components/alert-dialog";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
 import { DataTable, TableColumnDef } from "@/components/datatable";
 import { FilterableColumn } from "@/components/datatable/filters";
+import { ModalConfirm } from "@/components/modal-confirm";
 import PageContainer from "@/components/providers/page-container";
 import { Button } from "@/components/ui/button";
 import { useTableQueryParams } from "@/hooks/shared/use-table-query-params";
@@ -23,9 +22,6 @@ export default function UserPage() {
   ];
 
   const { queryParams } = useTableQueryParams();
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<string>("");
-  const deleteUserMutation = useDeleteUserMutation(selectedUserId);
 
   const { data, isLoading, isError } = useUsersQuery({
     ...queryParams,
@@ -33,22 +29,27 @@ export default function UserPage() {
     limit: queryParams.limit,
     search: queryParams.search,
   });
+  const { mutate: deleteUserMutation } = useDeleteUserMutation();
 
   const handleDeleteClick = (userId: string) => {
-    setSelectedUserId(userId);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    deleteUserMutation.mutate(undefined, {
-      onSuccess: () => {
-        toast.success("User deleted successfully");
-      },
-      onError: (error) => {
-        toast.error(error?.response?.data?.message || "Failed to delete user. Please try again.");
+    ModalConfirm.show({
+      title: "Delete User",
+      description: "Are you sure you want to delete this user? This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: () => {
+        deleteUserMutation(userId, {
+          onSuccess: () => {
+            toast.success("User deleted successfully");
+          },
+          onError: (error) => {
+            toast.error(
+              error?.response?.data?.message || "Failed to delete user. Please try again."
+            );
+          },
+        });
       },
     });
-    setDeleteDialogOpen(false);
   };
 
   const columns: TableColumnDef<TUserItem>[] = [
@@ -164,16 +165,6 @@ export default function UserPage() {
         pageCount={data?.meta?.total_page || 0}
         searchColumn="name"
         totalCount={data?.meta?.total || 0}
-      />
-      <AlertConfirmDialog
-        cancelText="Cancel"
-        continueText="Delete"
-        description="Are you sure you want to delete this user? This action cannot be undone."
-        isDestructive
-        onContinue={handleConfirmDelete}
-        onOpenChange={setDeleteDialogOpen}
-        open={deleteDialogOpen}
-        title="Delete User"
       />
     </PageContainer>
   );
