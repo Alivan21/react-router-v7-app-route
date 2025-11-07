@@ -14,6 +14,8 @@ type DataTablePaginationProps<TData> = {
   totalCount: number;
 };
 
+const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50];
+
 export function DataTablePagination<TData>({ table, totalCount }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex flex-col items-center justify-between gap-4 px-2 lg:flex-row">
@@ -45,7 +47,7 @@ export function DataTablePagination<TData>({ table, totalCount }: DataTablePagin
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {PAGE_SIZE_OPTIONS.map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

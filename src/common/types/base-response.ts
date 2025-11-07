@@ -1,7 +1,7 @@
 /**
  * Base API response type that all response types should extend
  */
-export type BaseResponse = {
+export type TBaseResponse = {
   message: string;
   timestamp: string;
 };
@@ -9,42 +9,39 @@ export type BaseResponse = {
 /**
  * Standard success response with data payload
  */
-export type SuccessResponse<T = unknown> = BaseResponse & {
+export type TResponseData<T = unknown> = TBaseResponse & {
   data: T;
 };
 
 /**
  * Standard error response with error details
  */
-export type ErrorResponse = BaseResponse & {
+export type TErrorResponse = TBaseResponse & {
   error: {
     code: string;
     details?: unknown;
   };
 };
 
-/**
- * Paginated response for list endpoints
- */
-export type PaginatedResponse<T = unknown> = SuccessResponse<T[]> & {
-  meta?: {
-    total: number;
-    page: number;
-    limit: number;
-    total_page: number;
-    has_next_page: boolean;
-    has_prev_page: boolean;
-    next_page?: string;
-    prev_page?: string;
-    first_page?: string;
-    last_page?: string;
-    links?: {
-      [key: string]: string | undefined;
-    };
+export type TMeta = {
+  total: number;
+  page: number;
+  limit: number;
+  total_page: number;
+  has_next_page: boolean;
+  has_prev_page: boolean;
+  next_page?: string;
+  prev_page?: string;
+  first_page?: string;
+  last_page?: string;
+  links?: {
+    [key: string]: string | undefined;
   };
 };
 
 /**
- * Helper type to represent any valid API response
+ * Paginated response for list endpoints
  */
-export type ApiResponse<T = unknown> = SuccessResponse<T> | ErrorResponse;
+export type TResponsePaginated<T = unknown> = TResponseData<T[]> & {
+  meta?: TMeta;
+};

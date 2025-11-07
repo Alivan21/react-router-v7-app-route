@@ -4,11 +4,11 @@ import {
   useMutation as useMutationOrigin,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { ErrorResponse } from "@/common/types/base-response";
+import { TErrorResponse } from "@/common/types/base-response";
 
 export const useMutation = <
   TData = unknown,
-  TError = AxiosError<ErrorResponse>,
+  TError = AxiosError<TErrorResponse>,
   TVariables = void,
   TContext = unknown,
 >(

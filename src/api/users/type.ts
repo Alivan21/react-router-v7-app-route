@@ -1,4 +1,4 @@
-import { ApiResponse, PaginatedResponse, SuccessResponse } from "@/common/types/base-response";
+import { TResponseData, TResponsePaginated } from "@/common/types/base-response";
 
 export type TUserItem = {
   id: string;
@@ -20,6 +20,5 @@ export type TUserQueryParams = {
   sort_order?: "asc" | "desc";
 };
 
-export type TUserResponse = SuccessResponse<TUserItem>;
-export type TUserListResponse = PaginatedResponse<TUserItem>;
-export type TUserApiResponse = ApiResponse<TUserItem | TUserItem[] | null>;
+export type TUserResponse = TResponseData<TUserItem | null>;
+export type TUserListResponse = TResponsePaginated<TUserItem>;

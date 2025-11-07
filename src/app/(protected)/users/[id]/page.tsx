@@ -66,16 +66,16 @@ export default function DetailUserPage() {
       withBackButton
     >
       <Descriptions column={2}>
-        <Descriptions.Item label="User ID">{data?.data.id}</Descriptions.Item>
-        <Descriptions.Item label="Full Name">{data?.data.name}</Descriptions.Item>
-        <Descriptions.Item label="Email">{data?.data.email}</Descriptions.Item>
-        <Descriptions.Item label="Phone Number">{data?.data.phone_number}</Descriptions.Item>
+        <Descriptions.Item label="User ID">{data?.data?.id}</Descriptions.Item>
+        <Descriptions.Item label="Full Name">{data?.data?.name}</Descriptions.Item>
+        <Descriptions.Item label="Email">{data?.data?.email}</Descriptions.Item>
+        <Descriptions.Item label="Phone Number">{data?.data?.phone_number}</Descriptions.Item>
         <Descriptions.Item label="Status">
           <Badge
             className="uppercase"
-            variant={data?.data.status === "active" ? "success" : "destructive"}
+            variant={data?.data?.status === "active" ? "success" : "destructive"}
           >
-            {data?.data.status}
+            {data?.data?.status}
           </Badge>
         </Descriptions.Item>
       </Descriptions>
@@ -83,7 +83,7 @@ export default function DetailUserPage() {
       <AlertConfirmDialog
         cancelText="Cancel"
         continueText="Delete"
-        description={`Are you sure you want to delete user ${data?.data.name}? This action cannot be undone.`}
+        description={`Are you sure you want to delete user ${data?.data?.name}? This action cannot be undone.`}
         isDestructive={true}
         onContinue={handleConfirmDelete}
         onOpenChange={setDeleteDialogOpen}

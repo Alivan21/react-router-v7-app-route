@@ -1,10 +1,4 @@
-import {
-  TUserItem,
-  TUserResponse,
-  TUserListResponse,
-  TUserApiResponse,
-  TUserQueryParams,
-} from "./type";
+import { TUserItem, TUserResponse, TUserListResponse, TUserQueryParams } from "./type";
 
 const mockUsers: TUserItem[] = [
   {
@@ -222,7 +216,7 @@ export async function updateUser(
   };
 }
 
-export async function deleteUser(id: string): Promise<TUserApiResponse> {
+export async function deleteUser(id: string): Promise<TUserResponse> {
   await delay(400);
 
   const userIndex = mockUsers.findIndex((user) => user.id === id && user.deleted_at === null);

@@ -19,7 +19,7 @@ export default function EditUserPage() {
 
   const breadcrumbs = [
     { text: "Users", url: ROUTES.USERS.LIST },
-    { text: data?.data.name || "User", url: ROUTES.USERS.DETAIL.replace(":id", id as string) },
+    { text: data?.data?.name || "User", url: ROUTES.USERS.DETAIL.replace(":id", id as string) },
     { text: "Edit", url: ROUTES.USERS.EDIT.replace(":id", id as string) },
   ];
 

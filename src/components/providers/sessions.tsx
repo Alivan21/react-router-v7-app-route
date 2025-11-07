@@ -2,6 +2,7 @@ import { createContext, use, useEffect, useMemo, useState } from "react";
 
 import { login, logout } from "@/api/auth";
 import { TLoginRequest } from "@/api/auth/schema";
+import { TLoginItem } from "@/api/auth/type";
 import { UserData } from "@/common/types/user";
 import { httpClient } from "@/libs/axios";
 import { SessionAuthCookies } from "@/libs/cookies";
@@ -72,7 +73,9 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
     try {
       setIsLoading(true);
       const response = await login(credentials);
-      const { token, expires_at } = response.data;
+      const loginData: TLoginItem = response.data;
+      const token: string = loginData.token;
+      const expires_at: string = loginData.expires_at;
       httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       const expiryDate = new Date(expires_at);

@@ -43,6 +43,8 @@ type DataTableProps<TData, TValue> = {
   searchColumn?: string;
   filterableColumns?: FilterableColumn[];
   initialColumnVisibility?: VisibilityState;
+  showViewOptions?: boolean;
+  showSearch?: boolean;
 };
 
 function getColumnWidth<TData, TValue = unknown>(columnDef: TableColumnDef<TData, TValue>): string {
@@ -59,6 +61,8 @@ export function DataTable<TData, TValue>({
   searchColumn = "name",
   filterableColumns = [],
   initialColumnVisibility,
+  showViewOptions = true,
+  showSearch = true,
 }: DataTableProps<TData, TValue>) {
   const { state } = useSidebar();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -223,27 +227,30 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row">
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex gap-2">
+          {showViewOptions && (
+            <div className="w-full">
+              <DataTableViewOptions table={table} />
+            </div>
+          )}
+          {filterableColumns.length > 0 && (
+            <div className="w-full">
+              <DataTableFilters filterableColumns={filterableColumns} table={table} />
+            </div>
+          )}
+        </div>
+        {showSearch && (
           <SearchInput
-            initialValue={searchParams.get("search") || ""}
+            initialValue={searchParams.get("search") ?? ""}
             onSearch={handleSearch}
             placeholder={`Search by ${searchColumn}...`}
           />
-          <div className="flex justify-end">
-            <DataTableViewOptions table={table} />
-          </div>
-        </div>
-
-        {filterableColumns.length > 0 && (
-          <div className="w-full">
-            <DataTableFilters filterableColumns={filterableColumns} table={table} />
-          </div>
         )}
       </div>
       <ScrollArea
         className={cn(
-          "w-screen max-w-[95vw] rounded-md border p-1 whitespace-nowrap",
+          "w-screen max-w-[95vw] overflow-hidden rounded-md border p-1 whitespace-nowrap",
           state === "collapsed"
             ? "md:max-w-[calc(100vw-64px-3.5rem)]"
             : "md:max-w-[calc(100vw-256px-4rem)]"
