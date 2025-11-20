@@ -5,17 +5,30 @@ import { env } from "../env";
 
 export const httpClient = axios.create({
   baseURL: env.VITE_BASE_API_URL,
-  withCredentials: true,
-  headers: {
-    Authorization: `Bearer ${SessionAuthCookies.get()}`,
-  },
 });
 
 // Flag to prevent multiple logout attempts during concurrent requests
 let isLoggingOut = false;
 
+// Request interceptor: Always use the latest token from cookies
+httpClient.interceptors.request.use(
+  (config) => {
+    const token = SessionAuthCookies.get();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error instanceof Error ? error : new Error(String(error)))
+);
+
+// Response interceptor: Handle 401 errors
 httpClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Reset logout flag on successful response
+    isLoggingOut = false;
+    return response;
+  },
   async (error: AxiosError) => {
     // Check if the error is due to an unauthorized request (401)
     if (error.response?.status === 401 && !isLoggingOut) {
@@ -27,6 +40,11 @@ httpClient.interceptors.response.use(
 
       // Dispatch a custom event that the SessionProvider can listen for
       window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+
+      // Reset flag after a delay
+      setTimeout(() => {
+        isLoggingOut = false;
+      }, 1000);
 
       redirect(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
     }

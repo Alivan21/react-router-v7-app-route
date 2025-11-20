@@ -1,145 +1,139 @@
-import { createContext, use, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { login, logout } from "@/api/auth";
+import { login as loginApi, logout as logoutApi } from "@/api/auth";
 import { TLoginRequest } from "@/api/auth/schema";
-import { TLoginItem } from "@/api/auth/type";
-import { UserData } from "@/common/types/user";
+import { TUserData } from "@/common/types/user";
+import { calculateMaxAge } from "@/common/utils/calculate-max-age";
+import { decodeJwt } from "@/common/utils/jwt";
 import { httpClient } from "@/libs/axios";
 import { SessionAuthCookies } from "@/libs/cookies";
-import { decodeJwt } from "@/utils/jwt";
 
 type SessionContextType = {
   isAuthenticated: boolean;
-  user: UserData | null;
+  user: TUserData | null;
   token: string | null;
   login: (credentials: TLoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
 };
 
-const SessionContext = createContext<SessionContextType>({
-  isAuthenticated: false,
-  user: null,
-  token: null,
-  login: async () => {},
-  logout: async () => {},
-  isLoading: true,
-});
+const SessionContext = createContext<SessionContextType | null>(null);
 
-type SessionProviderProps = {
-  children: React.ReactNode;
-};
+function initializeSession() {
+  const storedToken = SessionAuthCookies.get();
+  if (!storedToken) {
+    return { token: null, user: null, isAuthenticated: false };
+  }
+
+  try {
+    const decodedUser = decodeJwt<TUserData>(storedToken);
+
+    // Validate token expiry
+    if (decodedUser.exp && decodedUser.exp * 1000 <= Date.now()) {
+      clearSession();
+      return { token: null, user: null, isAuthenticated: false };
+    }
+
+    httpClient.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+    return {
+      token: storedToken,
+      user: decodedUser,
+      isAuthenticated: true,
+    };
+  } catch (error) {
+    console.error("Failed to restore session:", error);
+    clearSession();
+    return { token: null, user: null, isAuthenticated: false };
+  }
+}
+
+function clearSession() {
+  SessionAuthCookies.remove();
+  httpClient.defaults.headers.common.Authorization = undefined;
+}
 
 /**
- * SessionProvider component to manage authentication state
- * @param {SessionProviderProps} props - The component props
- * @returns {JSX.Element} The rendered component
+ * SessionProvider manages authentication state for the application
  */
-export const SessionProvider: React.FC<SessionProviderProps> = ({
-  children,
-}: SessionProviderProps): React.JSX.Element => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<UserData | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export function SessionProvider({ children }: { children: React.ReactNode }) {
+  const [sessionState, setSessionState] = useState(() => initializeSession());
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Listen for unauthorized events from axios interceptor
   useEffect(() => {
-    const initializeAuth = () => {
-      const storedToken = SessionAuthCookies.get();
+    function handleUnauthorized() {
+      setSessionState({ token: null, user: null, isAuthenticated: false });
+    }
 
-      if (storedToken) {
-        httpClient.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
-        const userData = decodeJwt<UserData>(storedToken);
-        if (userData) {
-          setToken(storedToken);
-          setUser(userData);
-          setIsAuthenticated(true);
-        }
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
-        setToken(null);
-        SessionAuthCookies.remove();
-        httpClient.defaults.headers.common.Authorization = undefined;
-      }
-
-      setIsLoading(false);
-    };
-
-    initializeAuth();
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
   }, []);
 
-  const handleLogin = async (credentials: TLoginRequest) => {
+  async function login(credentials: TLoginRequest) {
     try {
       setIsLoading(true);
-      const response = await login(credentials);
-      const loginData: TLoginItem = response.data;
-      const token: string = loginData.token;
-      const expires_at: string = loginData.expires_at;
-      httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+      const response = await loginApi(credentials);
+      const { token: sessionToken, expires_at } = response.data;
 
-      const expiryDate = new Date(expires_at);
-      SessionAuthCookies.set(token, {
-        expires: expiryDate,
+      const decodedUser = decodeJwt<TUserData>(sessionToken);
+      const maxAge = calculateMaxAge(expires_at ?? decodedUser.exp);
+
+      SessionAuthCookies.set(sessionToken, { maxAge });
+      httpClient.defaults.headers.common.Authorization = `Bearer ${sessionToken}`;
+
+      setSessionState({
+        token: sessionToken,
+        user: decodedUser,
+        isAuthenticated: true,
       });
-
-      setToken(token);
-      setUser(decodeJwt<UserData>(token));
-      setIsAuthenticated(true);
     } catch (error) {
       console.error("Login failed:", error);
-      setIsAuthenticated(false);
-      setUser(null);
-      setToken(null);
+      clearSession();
+      setSessionState({ token: null, user: null, isAuthenticated: false });
       throw error;
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
-  const handleLogout = async () => {
+  async function logout() {
     try {
       setIsLoading(true);
-      await logout();
-      SessionAuthCookies.remove();
-      httpClient.defaults.headers.common.Authorization = undefined;
-      setToken(null);
-      setUser(null);
-      setIsAuthenticated(false);
+      await logoutApi();
     } catch (error) {
       console.error("Logout failed:", error);
-      throw error;
     } finally {
+      clearSession();
+      setSessionState({ token: null, user: null, isAuthenticated: false });
+      window.dispatchEvent(new CustomEvent("auth:unauthorized"));
       setIsLoading(false);
     }
-  };
+  }
 
-  const contextValue = useMemo(
+  // Memoize context value to prevent unnecessary re-renders of consumers
+  const value = useMemo(
     () => ({
-      isAuthenticated,
-      user,
-      token,
-      login: handleLogin,
-      logout: handleLogout,
+      isAuthenticated: sessionState.isAuthenticated,
+      user: sessionState.user,
+      token: sessionState.token,
+      login,
+      logout,
       isLoading,
     }),
-    [isAuthenticated, user, token, isLoading]
+    [sessionState.isAuthenticated, sessionState.user, sessionState.token, isLoading]
   );
 
-  return <SessionContext.Provider value={contextValue}>{children}</SessionContext.Provider>;
-};
+  return <SessionContext value={value}>{children}</SessionContext>;
+}
 
 /**
- * Hook for accessing session context
- * @returns {SessionContextType} The session context
- * @throws {Error} If used outside of SessionProvider
+ * Hook to access session context
+ * @throws {Error} If used outside SessionProvider
  */
-export const useSession = (): SessionContextType => {
-  const context = use(SessionContext);
-
+export function useSession(): SessionContextType {
+  const context = useContext(SessionContext);
   if (!context) {
     throw new Error("useSession must be used within a SessionProvider");
   }
-
   return context;
-};
+}

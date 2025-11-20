@@ -1,6 +1,6 @@
-import { JwtPayload } from "@/utils/jwt";
+import { JwtPayload } from "@/common/utils/jwt";
 
-export type UserData = JwtPayload & {
+export type TUserData = JwtPayload & {
   id: string;
   email: string;
   name: string;

@@ -1,6 +1,6 @@
 import { SessionAuthCookies } from "./libs/cookies";
 import { registerMiddleware } from "./libs/react-router";
-import { decodeJwt } from "./utils/jwt";
+import { decodeJwt } from "./common/utils/jwt";
 
 registerMiddleware({
   // Index route handling middleware

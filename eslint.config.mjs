@@ -84,7 +84,6 @@ export default [
       "import/first": "off",
       "import/newline-after-import": "off",
       "import/no-duplicates": "warn",
-      "prettier/prettier": "warn",
     },
     settings: {
       react: {
