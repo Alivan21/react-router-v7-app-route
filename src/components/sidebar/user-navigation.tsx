@@ -1,6 +1,6 @@
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,

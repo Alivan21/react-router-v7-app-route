@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Toaster } from "react-hot-toast";
 import { createBrowserRouter, RouterProvider } from "react-router";
+import { Toaster } from "sonner";
+
 import { ModalConfirmProvider } from "./components/modal-confirm";
 import { SessionProvider } from "./components/providers/sessions.tsx";
 import { createRoutesFromFiles } from "./libs/react-router/index.ts";
@@ -23,7 +24,7 @@ createRoot(document.getElementById("root")!).render(
       <TanstackProvider>
         <ModalConfirmProvider>
           <RouterProvider router={router} />
-          <Toaster position="top-center" />
+          <Toaster position="top-center" richColors />
         </ModalConfirmProvider>
       </TanstackProvider>
     </SessionProvider>

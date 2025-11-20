@@ -1,6 +1,6 @@
 import { Home } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { ROUTES } from "@/common/constants/routes";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
 import PageContainer from "@/components/providers/page-container";

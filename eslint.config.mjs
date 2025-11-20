@@ -41,7 +41,7 @@ export default [
       prettier: prettierPlugin,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      ...reactHooks.configs["recommended-latest"].rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactPlugin.configs["jsx-runtime"].rules,
       ...jsxA11yPlugin.configs.recommended.rules,

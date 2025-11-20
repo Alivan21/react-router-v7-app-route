@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "lucide-react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { loginSchema, TLoginRequest } from "@/api/auth/schema";
 import { TErrorResponse } from "@/common/types/base-response";
 import { useSession } from "@/components/providers/sessions";

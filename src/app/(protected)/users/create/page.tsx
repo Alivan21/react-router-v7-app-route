@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { createUserSchema, TCreateUserRequest } from "@/api/users/schema";
 import { ROUTES } from "@/common/constants/routes";
 import PageContainer from "@/components/providers/page-container";

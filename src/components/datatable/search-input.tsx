@@ -35,7 +35,7 @@ export const SearchInput = memo(function SearchInput({
 
   return (
     <div className="relative w-full">
-      <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 shrink-0 -translate-y-1/2" />
+      <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 z-20 size-4 shrink-0 -translate-y-1/2" />
       <Input
         className="bg-background/70 border-muted focus-visible:bg-background w-full pr-10 pl-10 transition-colors"
         onChange={(e) => setSearchValue(e.target.value)}
@@ -54,7 +54,7 @@ export const SearchInput = memo(function SearchInput({
       {searchValue && (
         <button
           aria-label="Clear search"
-          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer transition-colors"
+          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 z-20 -translate-y-1/2 cursor-pointer transition-colors"
           onClick={handleClear}
           type="button"
         >

@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
 import { updateUserSchema, TUpdateUserRequest } from "@/api/users/schema";
 import Loading from "@/app/loading";
 import { ROUTES } from "@/common/constants/routes";

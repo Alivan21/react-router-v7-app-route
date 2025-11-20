@@ -24,7 +24,9 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/libs/clsx";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
 import { useSidebar } from "../ui/sidebar";
+import Spinner from "../ui/spinner";
 import { DataTableFilters, FilterableColumn } from "./filters";
 import { DataTablePagination } from "./pagination";
 import { SearchInput } from "./search-input";
@@ -250,77 +252,91 @@ export function DataTable<TData, TValue>({
       </div>
       <ScrollArea
         className={cn(
-          "w-screen max-w-[95vw] overflow-hidden rounded-md border p-1 whitespace-nowrap",
+          "w-screen max-w-[95vw] overflow-hidden rounded-md border",
           state === "collapsed"
             ? "md:max-w-[calc(100vw-64px-3.5rem)]"
             : "md:max-w-[calc(100vw-256px-4rem)]"
         )}
       >
-        <Table>
+        <Table className="table-auto">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="hover:bg-transparent" key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    style={{ width: getColumnWidth(header.column.columnDef) }}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div>
-                        {header.column.columnDef.enableSorting ? (
-                          <button
-                            className="group hover:text-foreground flex cursor-pointer items-center gap-1.5"
-                            onClick={() => {
-                              // Cycle through sorting states: asc -> desc -> none
-                              const currentSortDir = header.column.getIsSorted();
-                              if (currentSortDir === false) {
-                                table.setSorting([{ id: header.column.id, desc: false }]);
-                              } else if (currentSortDir === "asc") {
-                                table.setSorting([{ id: header.column.id, desc: true }]);
-                              } else {
-                                table.setSorting([]);
-                              }
-                            }}
-                          >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {header.column.getIsSorted() === "asc" ? (
-                              <ArrowUp className="ml-1 size-4" />
-                            ) : header.column.getIsSorted() === "desc" ? (
-                              <ArrowDown className="ml-1 size-4" />
-                            ) : (
-                              <ArrowUpDown className="ml-1 size-4 opacity-50 group-hover:opacity-100" />
-                            )}
-                          </button>
-                        ) : (
-                          flexRender(header.column.columnDef.header, header.getContext())
+            {table.getHeaderGroups().map((headerGroup) => {
+              const visibleHeaders = headerGroup.headers.filter((h) => !h.isPlaceholder);
+              return (
+                <TableRow className="hover:bg-transparent" key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    const visibleIndex = visibleHeaders.findIndex((h) => h.id === header.id);
+                    const isFirst = visibleIndex === 0;
+                    const isPlaceholder = header.isPlaceholder;
+                    return (
+                      <TableHead
+                        className="relative whitespace-nowrap"
+                        key={header.id}
+                        style={{ width: getColumnWidth(header.column.columnDef) }}
+                      >
+                        {!isPlaceholder && !isFirst && (
+                          <Separator
+                            className="absolute top-2 left-0 h-[25px]!"
+                            orientation="vertical"
+                          />
                         )}
-                      </div>
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+                        {isPlaceholder ? null : (
+                          <div className="flex h-full items-center">
+                            {header.column.columnDef.enableSorting ? (
+                              <button
+                                className="group hover:text-foreground flex w-full cursor-pointer items-center justify-between"
+                                onClick={() => {
+                                  // Cycle through sorting states: asc -> desc -> none
+                                  const currentSortDir = header.column.getIsSorted();
+                                  if (currentSortDir === false) {
+                                    table.setSorting([{ id: header.column.id, desc: false }]);
+                                  } else if (currentSortDir === "asc") {
+                                    table.setSorting([{ id: header.column.id, desc: true }]);
+                                  } else {
+                                    table.setSorting([]);
+                                  }
+                                }}
+                              >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                {header.column.getIsSorted() === "asc" ? (
+                                  <ArrowUp className="ms-2 size-4" />
+                                ) : header.column.getIsSorted() === "desc" ? (
+                                  <ArrowDown className="ms-2 size-4" />
+                                ) : (
+                                  <ArrowUpDown className="ms-2 size-4 opacity-50 group-hover:opacity-100" />
+                                )}
+                              </button>
+                            ) : (
+                              flexRender(header.column.columnDef.header, header.getContext())
+                            )}
+                          </div>
+                        )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array.from({ length: 10 }).map((_, index) => (
-                <TableRow key={index}>
-                  {columns.map((column, colIndex) => (
-                    <TableCell
-                      className="h-14"
-                      key={colIndex}
-                      style={{ width: getColumnWidth(column) }}
-                    >
-                      <div className="bg-muted h-4 animate-pulse rounded" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              <TableRow>
+                <TableCell
+                  className="h-[400px] text-center"
+                  colSpan={table.getVisibleLeafColumns().length}
+                >
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Spinner />
+                    <p className="text-muted-foreground">Loading data...</p>
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow data-state={row.getIsSelected() && "selected"} key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
+                      className="whitespace-nowrap"
                       key={cell.id}
                       style={{ width: getColumnWidth(cell.column.columnDef) }}
                     >
@@ -331,7 +347,10 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell className="h-24 text-center" colSpan={columns.length}>
+                <TableCell
+                  className="h-24 text-center"
+                  colSpan={table.getVisibleLeafColumns().length}
+                >
                   No results.
                 </TableCell>
               </TableRow>

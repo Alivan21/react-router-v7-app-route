@@ -1,6 +1,6 @@
 import { Edit2, Eye, Trash2 } from "lucide-react";
-import toast from "react-hot-toast";
 import { Link } from "react-router";
+import { toast } from "sonner";
 import { TUserItem } from "@/api/users/type";
 import { ROUTES } from "@/common/constants/routes";
 import { BreadcrumbsItem } from "@/components/breadcrumbs";
@@ -57,6 +57,7 @@ export default function UserPage() {
       accessorKey: "no",
       header: "No",
       enableSorting: true,
+      width: 75,
       cell: ({ row }) => <span>{row.index + 1}</span>,
     },
     {
@@ -67,6 +68,7 @@ export default function UserPage() {
     {
       accessorKey: "email",
       header: "Email",
+      width: 250,
     },
     {
       accessorKey: "phone_number",

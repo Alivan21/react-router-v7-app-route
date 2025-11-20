@@ -1,6 +1,6 @@
 import { Edit2, Trash2 } from "lucide-react";
-import toast from "react-hot-toast";
 import { useParams, Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import { useUserQuery } from "@/app/(protected)/users/[id]/_hooks/use-user-query";
 import { useDeleteUserMutation } from "@/app/(protected)/users/_hooks/use-delete-user-mutation";
 import Loading from "@/app/loading";
