@@ -25,7 +25,6 @@ export default [
       parser: tsParser,
       parserOptions: {
         project: ["./tsconfig.json", "./tsconfig.app.json", "./tsconfig.node.json"],
-        projectService: true,
         ecmaFeatures: {
           jsx: true,
         },
