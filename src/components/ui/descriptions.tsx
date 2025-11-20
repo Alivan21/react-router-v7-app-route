@@ -51,19 +51,38 @@ const renderDescriptionItem = (
   item: React.ReactElement,
   colIndex: number,
   row: Array<React.ReactElement | null>,
-  isMobile: boolean
+  isMobile: boolean,
+  rowIndex: number,
+  totalRows: number
 ) => {
   // Skip rendering if this cell is covered by a previous item's span
   if (shouldSkipRendering(item, colIndex, row)) return null;
 
   const itemProps = item.props as DescriptionsItemProps;
   const { label, labelClassName, children, contentClassName, span = 1 } = itemProps;
+  const isFirstRow = rowIndex === 0;
+  const isLastRow = rowIndex === totalRows - 1;
+  const isFirstCol = colIndex === 0;
+
+  // Find the last non-null item in the row to determine if this is the last column
+  let lastItemIndex = -1;
+  for (let i = row.length - 1; i >= 0; i--) {
+    if (row[i] !== null) {
+      lastItemIndex = i;
+      break;
+    }
+  }
+  const isLastCol = colIndex === lastItemIndex;
 
   return (
     <React.Fragment key={colIndex}>
       <th
         className={cn(
           "min-h-10 w-48 max-w-56 border-r border-b border-gray-200 bg-gray-50 p-2 px-4 text-left text-sm font-medium",
+          isFirstRow && "border-t",
+          isFirstCol && "border-l",
+          isFirstRow && isFirstCol && "rounded-tl-sm",
+          isFirstRow && isLastCol && "rounded-tr-sm",
           labelClassName
         )}
       >
@@ -71,7 +90,10 @@ const renderDescriptionItem = (
       </th>
       <td
         className={cn(
-          "min-h-10 overflow-hidden border-b border-gray-200 p-2 px-4 text-sm text-ellipsis",
+          "min-h-10 overflow-hidden border-r border-b border-gray-200 p-2 px-4 text-sm text-ellipsis",
+          isFirstRow && "border-t",
+          isLastRow && isFirstCol && "rounded-bl-sm",
+          isLastRow && isLastCol && "rounded-br-sm",
           contentClassName
         )}
         colSpan={isMobile ? 1 : span > 1 ? span * 2 - 1 : 1}
@@ -110,20 +132,23 @@ const Descriptions = ({
   const responsiveColumn = isMobile ? 1 : column;
   const grid = useDescriptionsGrid(children, responsiveColumn);
 
+  const totalRows = grid.length;
+
   return (
     <div className={cn("w-full", className)} {...props}>
       {title && <span className="mb-2 text-lg font-medium">{title}</span>}
       <table
         className={cn(
           "w-full table-fixed border-separate border-spacing-0 overflow-hidden",
-          bordered && "rounded-sm border border-gray-200"
+          bordered && "rounded-sm"
         )}
       >
         <tbody>
           {grid.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {row.map(
-                (item, colIndex) => item && renderDescriptionItem(item, colIndex, row, isMobile)
+                (item, colIndex) =>
+                  item && renderDescriptionItem(item, colIndex, row, isMobile, rowIndex, totalRows)
               )}
             </tr>
           ))}
@@ -135,7 +160,6 @@ const Descriptions = ({
 
 Descriptions.displayName = "Descriptions";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DescriptionsItem = (_props: DescriptionsItemProps) => {
   // This is just a placeholder component - the actual rendering is handled by Descriptions
   return null;

@@ -70,7 +70,7 @@ export default function DetailUserPage() {
         <Descriptions.Item label="Full Name">{data?.data?.name}</Descriptions.Item>
         <Descriptions.Item label="Email">{data?.data?.email}</Descriptions.Item>
         <Descriptions.Item label="Phone Number">{data?.data?.phone_number}</Descriptions.Item>
-        <Descriptions.Item label="Status">
+        <Descriptions.Item label="Status" span={2}>
           <Badge
             className="uppercase"
             variant={data?.data?.status === "active" ? "success" : "destructive"}

@@ -11,6 +11,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import pluginQuery from "@tanstack/eslint-plugin-query";
+import { readFileSync } from "fs";
 
 export default [
   { ignores: ["dist", "dev-dist", "node_modules/*", "!.prettierrc"] },
@@ -53,7 +54,14 @@ export default [
       "react/self-closing-comp": "warn",
       "react/jsx-sort-props": "warn",
       "react/prop-types": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "import/order": [
         "warn",
         {
@@ -88,6 +96,30 @@ export default [
       react: {
         version: "detect",
       },
+    },
+    // Processor to filter out react-hooks/incompatible-library errors for files with "use no memo"
+    processor: {
+      preprocess(text) {
+        return [text];
+      },
+      postprocess(messages, filename) {
+        try {
+          const content = readFileSync(filename, "utf-8");
+          const hasUseNoMemo = /use\s+no\s+memo/i.test(content);
+
+          if (hasUseNoMemo) {
+            return messages
+              .flat()
+              .filter(
+                (message) => message && message.ruleId !== "react-hooks/incompatible-library"
+              );
+          }
+        } catch {
+          // If we can't read the file, return messages as-is
+        }
+        return messages.flat().filter((message) => message != null);
+      },
+      supportsAutofix: false,
     },
   },
 ];

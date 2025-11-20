@@ -66,6 +66,8 @@ export function DataTable<TData, TValue>({
   showViewOptions = true,
   showSearch = true,
 }: DataTableProps<TData, TValue>) {
+  "use no memo";
+
   const { state } = useSidebar();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -113,7 +115,6 @@ export function DataTable<TData, TValue>({
     }
   }, [searchParams, filterableColumns]);
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
