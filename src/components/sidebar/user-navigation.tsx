@@ -82,22 +82,28 @@ export function UserNavigation({ user }: UserNavigationProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
+              <DropdownMenuItem
+                asChild
+                className="hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground! cursor-pointer"
+              >
                 <Button
-                  className="w-full cursor-pointer justify-start"
+                  className="hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground! w-full cursor-pointer justify-start"
                   size="sm"
                   type="button"
                   variant="ghost"
                 >
-                  <BadgeCheck className="text-black" />
+                  <BadgeCheck className="hover:text-sidebar-accent-foreground!" />
                   Account
                 </Button>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem
+              asChild
+              className="hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground! cursor-pointer"
+            >
               <Button
-                className="w-full cursor-pointer justify-start"
+                className="hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground! w-full cursor-pointer justify-start"
                 onClick={() => {
                   void handleLogout();
                 }}
@@ -105,7 +111,7 @@ export function UserNavigation({ user }: UserNavigationProps) {
                 type="button"
                 variant="ghost"
               >
-                <LogOut className="text-black" />
+                <LogOut className="hover:text-sidebar-accent-foreground!" />
                 Log out
               </Button>
             </DropdownMenuItem>

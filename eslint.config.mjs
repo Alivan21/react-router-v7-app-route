@@ -1,4 +1,5 @@
 import pluginJs from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import prettierConfig from "eslint-config-prettier";
@@ -13,7 +14,7 @@ import tseslint from "typescript-eslint";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 import { readFileSync } from "fs";
 
-export default [
+export default defineConfig(
   { ignores: ["dist", "dev-dist", "node_modules/*", "!.prettierrc"] },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
@@ -119,7 +120,7 @@ export default [
         }
         return messages.flat().filter((message) => message != null);
       },
-      supportsAutofix: false,
+      supportsAutofix: true,
     },
-  },
-];
+  }
+);

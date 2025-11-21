@@ -24,7 +24,7 @@ createRoot(document.getElementById("root")!).render(
       <TanstackProvider>
         <ModalConfirmProvider>
           <RouterProvider router={router} />
-          <Toaster position="top-center" richColors />
+          <Toaster closeButton position="top-center" richColors />
         </ModalConfirmProvider>
       </TanstackProvider>
     </SessionProvider>
