@@ -7,7 +7,7 @@ export const queryClient: QueryClient = new QueryClient({
     },
   },
   mutationCache: new MutationCache({
-    onSuccess: (_data, _variables, _context, mutation) => {
+    onSettled: (_data, _error, _variables, _context, mutation) => {
       // If meta.invalidateQueries is provided, invalidate those specific queries
       // Otherwise, invalidate all queries
       const invalidateQueries = mutation.meta?.invalidateQueries;
