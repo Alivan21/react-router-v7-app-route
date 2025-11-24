@@ -8,7 +8,7 @@ import { useQuery } from "@/hooks/request/use-query";
  */
 export const useUsersQuery = (params: TUserQueryParams = {}) => {
   return useQuery({
-    queryKey: [QUERY_KEY.USER.LIST, params],
+    queryKey: QUERY_KEY.USER.LIST(params),
     queryFn: () => getUsers(params),
   });
 };

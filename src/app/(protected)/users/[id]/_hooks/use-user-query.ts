@@ -8,7 +8,7 @@ import { useQuery } from "@/hooks/request/use-query";
  */
 export const useUserQuery = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.USER.DETAIL, id],
+    queryKey: QUERY_KEY.USER.DETAIL(id),
     queryFn: () => getUserById(id),
     enabled: Boolean(id),
   });

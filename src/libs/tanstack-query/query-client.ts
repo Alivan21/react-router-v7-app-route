@@ -1,17 +1,26 @@
-import { MutationCache, QueryClient, type InvalidateQueryFilters } from "@tanstack/react-query";
+import { MutationCache, QueryClient, QueryKey } from "@tanstack/react-query";
 
-export const queryClient = new QueryClient({
+export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   },
   mutationCache: new MutationCache({
-    async onSettled(_data, _error, _variables, _context, mutation) {
-      if (mutation.meta?.invalidateQueries) {
-        await queryClient.invalidateQueries(
-          mutation.meta.invalidateQueries as InvalidateQueryFilters<readonly unknown[]>
-        );
+    onSuccess: (_data, _variables, _context, mutation) => {
+      // If meta.invalidateQueries is provided, invalidate those specific queries
+      // Otherwise, invalidate all queries
+      const invalidateQueries = mutation.meta?.invalidateQueries;
+      if (invalidateQueries) {
+        const queryKeys = (
+          Array.isArray(invalidateQueries) ? invalidateQueries : [invalidateQueries]
+        ) as QueryKey[];
+
+        queryKeys.forEach((queryKey) => {
+          void queryClient.invalidateQueries({ queryKey });
+        });
+      } else {
+        void queryClient.invalidateQueries();
       }
     },
   }),

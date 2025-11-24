@@ -9,7 +9,7 @@ import { useQuery } from "@/hooks/request/use-query";
  */
 export const useUsersOptionQuery = (params: TUserQueryParams) => {
   return useQuery({
-    queryKey: [QUERY_KEY.USER.OPTIONS, params],
+    queryKey: QUERY_KEY.USER.OPTIONS(params),
     queryFn: () => getUsers(params),
     select: (data) => data.data.map((user) => ({ label: user.name, value: user.id })),
   });

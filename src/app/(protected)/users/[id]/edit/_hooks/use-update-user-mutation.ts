@@ -11,7 +11,7 @@ export const useUpdateUserMutation = (id: string) => {
   return useMutation({
     mutationFn: (userData: TUpdateUserRequest) => updateUser(id, userData),
     meta: {
-      invalidateQueries: [QUERY_KEY.USER.ALL],
+      invalidateQueries: QUERY_KEY.USER.ALL(),
     },
   });
 };

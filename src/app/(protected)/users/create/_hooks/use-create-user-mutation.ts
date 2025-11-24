@@ -10,7 +10,7 @@ export const useCreateUserMutation = () => {
   return useMutation({
     mutationFn: (userData: TCreateUserRequest) => createUser(userData),
     meta: {
-      invalidateQueries: [QUERY_KEY.USER.ALL],
+      invalidateQueries: QUERY_KEY.USER.ALL(),
     },
   });
 };
